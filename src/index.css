@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+@theme {
+  --color-charcoal: #121212;
+  --color-momo-red: #ff3e3e;
+  --color-momo-yellow: #ffb800;
+  --color-momo-green: #2ecc71;
+  --color-momo-white: #f5f5f5;
+  
+  --font-street: "Bebas Neue", sans-serif;
+  --font-body: "Outfit", sans-serif;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    background-color: var(--color-charcoal);
+    color: white;
+  }
+  
+  body {
+    font-family: var(--font-body);
+    overflow-x: hidden;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-charcoal);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #444;
+}
+
+.momo-gradient-red {
+  background: linear-gradient(135deg, #ff3e3e 0%, #c0392b 100%);
+}
+
+.momo-gradient-yellow {
+  background: linear-gradient(135deg, #ffb800 0%, #f39c12 100%);
+}
+
+.momo-gradient-green {
+  background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
