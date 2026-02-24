@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  --color-charcoal: #121212;
+  --color-charcoal: #000000;
   --color-momo-red: #ff3e3e;
   --color-momo-yellow: #ffb800;
   --color-momo-green: #2ecc71;
@@ -81,4 +81,14 @@
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+.outline-text {
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.4);
+  transition: -webkit-text-stroke 0.5s ease;
+}
+
+.outline-text:hover {
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.8);
 }
