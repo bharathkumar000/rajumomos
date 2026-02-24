@@ -1,305 +1,547 @@
-import React, { useRef } from 'react';
-import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
-import { MapPin, Phone, Instagram, ShoppingBag, Star, ArrowRight, Menu as MenuIcon } from 'lucide-react';
+import React, { useRef, useMemo } from 'react';
+import { motion, useScroll, useTransform, useSpring, useInView } from 'framer-motion';
+import { MapPin, Phone, Instagram, ShoppingBag, Star, ArrowRight, Menu as MenuIcon, MessageCircle } from 'lucide-react';
 
-const Card = ({ title, price, color, image, description }) => (
+const Card = ({ title, price, subtitle, color, image, description }) => (
   <motion.div
-    whileHover={{ y: -10 }}
-    className="relative group min-w-[300px] md:min-w-[350px] aspect-[4/5] rounded-[2.5rem] overflow-hidden glass transition-all hover:shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
+    whileHover={{ y: -15, scale: 1.02 }}
+    className="relative group min-w-[320px] md:min-w-[400px] h-[500px] rounded-[3rem] overflow-hidden bg-black transition-all duration-500 shadow-2xl"
   >
     <div className={`absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-black z-10`} />
     <img
       src={image}
       alt={title}
-      className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+      className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-60 filter brightness-110 contrast-125"
+      style={{ willChange: 'transform', transform: 'translateZ(0)' }}
     />
     <div className="absolute inset-0 z-20 p-10 flex flex-col justify-end">
-      <div className={`w-16 h-1 mb-6 rounded-full shadow-[0_0_20px_rgba(255,255,255,0.3)]`} style={{ backgroundColor: `var(--color-${color})` }} />
+      <div className="mb-4">
+        <span className="text-xs font-bold uppercase tracking-[0.3em] opacity-60 text-white">{subtitle}</span>
+        <div className="w-12 h-1 mt-2 rounded-full" style={{ backgroundColor: color }} />
+      </div>
       <h3 className="text-4xl font-street text-white mb-3 tracking-wider">{title}</h3>
-      <p className="text-white/60 text-sm mb-6 font-light leading-relaxed line-clamp-2">{description}</p>
+      <p className="text-white/60 text-sm mb-8 font-light leading-relaxed line-clamp-3 italic">"{description}"</p>
       <div className="flex items-center justify-between">
-        <span className="text-3xl font-bold text-white tracking-tight">₹{price}</span>
-        <button className="px-8 py-3 bg-white text-black rounded-full font-extrabold text-[10px] tracking-[0.2em] hover:bg-white/90 transition-all hover:scale-105 active:scale-95 uppercase">
-          Quick Order
+        <div className="flex flex-col">
+          <span className="text-[10px] uppercase tracking-widest opacity-40">Starts at</span>
+          <span className="text-3xl font-bold text-white tracking-tight">₹{price}</span>
+        </div>
+        <button className="group/btn px-8 py-4 bg-white text-black rounded-full font-black text-[10px] tracking-[0.2em] hover:bg-momo-red hover:text-white transition-all duration-300 uppercase flex items-center gap-2">
+          Order Now <ArrowRight size={14} className="group-hover/btn:translate-x-1 transition-transform" />
         </button>
       </div>
     </div>
   </motion.div>
 );
 
+const SectionHeading = ({ title, subtitle, accent }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 30 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true }}
+    className="mb-20 text-center md:text-left"
+  >
+    <span className={`text-${accent} font-bold uppercase tracking-[0.4em] text-xs mb-4 block`}>{subtitle}</span>
+    <h2 className="text-6xl md:text-9xl font-street leading-none tracking-tighter">
+      {title}
+    </h2>
+  </motion.div>
+);
+
 function App() {
   const containerRef = useRef(null);
+  const sizzleRef = useRef(null);
+  const horizontalRef = useRef(null);
+
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"]
   });
 
-  const heroScale = useTransform(scrollYProgress, [0, 0.2], [1, 1.2]);
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
-  const textY = useTransform(scrollYProgress, [0, 0.2], [0, -100]);
+  // Smoother scroll progress (Optimized for performance)
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 60,
+    damping: 25,
+    mass: 0.5,
+    restDelta: 0.01
+  });
 
-  const menuX = useTransform(scrollYProgress, [0.3, 0.6], ["0%", "-50%"]);
+  // Hero Section Animations
+  const heroOpacity = useTransform(smoothProgress, [0, 0.1], [1, 0]);
+  const heroScale = useTransform(smoothProgress, [0, 0.15], [1, 1.2]);
+  const headlineY = useTransform(smoothProgress, [0, 0.15], [0, -100]);
+
+  // Momo Storm (Spread across the entire screen)
+  // Red Momo (Top Left)
+  const redMomoX = useTransform(smoothProgress, [0, 0.3], [0, -200]);
+  const redMomoY = useTransform(smoothProgress, [0, 0.3], [0, -100]);
+  const redMomoRotate = useTransform(smoothProgress, [0, 0.3], [15, 60]);
+
+  // Yellow Momo (Bottom Right)
+  const yellowMomoX = useTransform(smoothProgress, [0, 0.3], [0, 300]);
+  const yellowMomoY = useTransform(smoothProgress, [0, 0.3], [0, 200]);
+  const yellowMomoRotate = useTransform(smoothProgress, [0, 0.3], [-10, -50]);
+
+  // Green Momo (Bottom Left)
+  const greenMomoX = useTransform(smoothProgress, [0, 0.3], [0, -150]);
+  const greenMomoY = useTransform(smoothProgress, [0, 0.3], [0, 150]);
+  const greenMomoRotate = useTransform(smoothProgress, [0, 0.3], [45, 90]);
+
+  // White Momo (Top Right)
+  const whiteMomoX = useTransform(smoothProgress, [0, 0.3], [0, 200]);
+  const whiteMomoY = useTransform(smoothProgress, [0, 0.3], [0, -150]);
+  const whiteMomoRotate = useTransform(smoothProgress, [0, 0.3], [-45, -90]);
+  const whiteMomoOpacity = useTransform(smoothProgress, [0, 0.15], [0.3, 0.6]); // Use opacity instead of blur for performance
+
+  // Mutton Momo (Central Foreground - Fast Zoom)
+  const muttonMomoScale = useTransform(smoothProgress, [0, 0.2], [1, 1.8]);
+  const muttonMomoX = useTransform(smoothProgress, [0, 0.2], [0, 100]);
+  const muttonMomoY = useTransform(smoothProgress, [0, 0.2], [0, 800]);
+  const muttonMomoRotate = useTransform(smoothProgress, [0, 0.2], [0, 45]);
+
+  // Headline Cinematic Split
+  const topTextX = useTransform(smoothProgress, [0, 0.2], [0, -100]);
+  const botTextX = useTransform(smoothProgress, [0, 0.2], [0, 100]);
+  const headlineScale = useTransform(smoothProgress, [0, 0.2], [1, 0.9]);
+
+  // Background Color Transition removed for pure black 'void' look
+  const bgColor = "#000000";
+
+  // Horizontal Scroll for Menu
+  const { scrollYProgress: horizontalScrollProgress } = useScroll({
+    target: horizontalRef,
+    offset: ["start start", "end end"]
+  });
+
+  const horizontalX = useTransform(horizontalScrollProgress, [0, 1], ["0%", "-60%"]);
 
   return (
-    <div ref={containerRef} className="bg-charcoal text-white selection:bg-momo-red selection:text-white">
+    <motion.div
+      ref={containerRef}
+      style={{ backgroundColor: bgColor }}
+      className="text-white selection:bg-momo-red selection:text-white transition-colors duration-700"
+    >
       {/* Navigation */}
-      <nav className="fixed top-0 w-full z-50 p-6 flex justify-between items-center bg-gradient-to-b from-black/50 to-transparent">
-        <div className="text-2xl font-street tracking-tighter text-momo-red drop-shadow-lg">
-          RAJU <span className="text-white">MOMOS</span>
+      <nav className="fixed top-0 w-full z-50 p-6 md:px-12 md:py-8 flex justify-between items-center bg-transparent pointer-events-none">
+        <div className="flex flex-col pointer-events-auto">
+          <div className="text-4xl font-street tracking-tighter text-white leading-none">
+            RAJU <span className="text-momo-red">MOMOS</span>
+          </div>
+          <div className="flex items-center gap-2 ml-1 mt-1">
+            <div className="w-4 h-[2px] bg-momo-red" />
+            <span className="text-[10px] font-bold tracking-[0.4em] uppercase opacity-40">Mysuru's Soul</span>
+          </div>
         </div>
-        <div className="hidden md:flex gap-8 text-sm font-bold tracking-widest uppercase">
-          <a href="#menu" className="hover:text-momo-red transition-colors">Menu</a>
-          <a href="#legacy" className="hover:text-momo-red transition-colors">The Legacy</a>
-          <a href="#locations" className="hover:text-momo-red transition-colors">Locations</a>
+        <div className="hidden lg:flex gap-16 text-[10px] font-black tracking-[0.3em] uppercase items-center pointer-events-auto">
+          <a href="#menu" className="text-white/60 hover:text-white transition-all duration-300">The Rainbow</a>
+          <a href="#legacy" className="text-white/60 hover:text-white transition-all duration-300">The Sizzle</a>
+          <a href="#locations" className="text-white/60 hover:text-white transition-all duration-300">Find Us</a>
+          <button className="bg-momo-red text-white py-4 px-10 rounded-full hover:scale-105 active:scale-95 transition-all shadow-2xl shadow-momo-red/30">
+            Order Now
+          </button>
         </div>
-        <button className="md:hidden">
-          <MenuIcon size={24} />
+        <button className="lg:hidden bg-white/10 backdrop-blur-xl p-5 rounded-full border border-white/20 pointer-events-auto shadow-2xl">
+          <MenuIcon size={24} className="text-white" />
         </button>
       </nav>
 
       {/* Hero Section */}
-      <section className="relative h-screen flex items-center justify-center overflow-hidden">
-        <motion.div
-          style={{ scale: heroScale, opacity: heroOpacity }}
-          className="absolute inset-0 z-0"
-        >
-          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/20 to-black/70 z-10" />
-          <img
-            src="/images/hero.png"
-            className="w-full h-full object-cover object-center"
-            alt="Hero Background"
-          />
-        </motion.div>
-
-        <motion.div
-          style={{ y: textY }}
-          className="relative z-20 text-center px-4"
-        >
+      <section className="relative h-[200vh] z-10">
+        <div className="sticky top-0 h-screen overflow-hidden flex items-center justify-center">
           <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 1 }}
-            className="mb-2"
+            style={{
+              scale: heroScale,
+              opacity: heroOpacity,
+              willChange: 'transform, opacity',
+              transform: 'translateZ(0)'
+            }}
+            className="absolute inset-0 z-0 bg-black"
           >
-            <span className="text-momo-yellow font-bold uppercase tracking-[0.3em] text-sm">Legendary Mysuru Street Food</span>
+            <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black z-10" />
+            {/* Cleaner void look */}
           </motion.div>
-          <motion.h1
-            initial={{ y: 50, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-7xl md:text-[10rem] font-street mb-4 tracking-tighter leading-[0.85] text-white drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)]"
-          >
-            RAJU <br />
-            <span className="text-momo-red">MOMOS</span>
-          </motion.h1>
-          <motion.p
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="text-lg md:text-2xl font-light tracking-widest max-w-2xl mx-auto uppercase opacity-90"
-          >
-            The Sizzle of Mysuru's Soul
-          </motion.p>
-        </motion.div>
 
-        <motion.div
-          animate={{ y: [0, 10, 0] }}
-          transition={{ duration: 2, repeat: Infinity }}
-          className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2"
-        >
-          <span className="text-[10px] uppercase tracking-widest opacity-50">Scroll to Explore</span>
-          <div className="w-px h-12 bg-gradient-to-b from-momo-red to-transparent" />
-        </motion.div>
+          {/* Headline */}
+          <motion.div
+            style={{
+              opacity: heroOpacity,
+              y: headlineY,
+              scale: headlineScale,
+              willChange: 'transform, opacity',
+              transform: 'translateZ(0)'
+            }}
+            className="relative z-20 text-center"
+          >
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1.2, ease: "circOut" }}
+            >
+              <span className="text-momo-yellow font-bold uppercase tracking-[0.5em] text-[10px] mb-12 block px-4 border-x border-momo-yellow/30 mx-auto w-fit">
+                The Legend Returns
+              </span>
+              <div className="overflow-hidden mb-8">
+                <motion.h1
+                  style={{ x: topTextX }}
+                  className="text-[14vw] font-street leading-[0.75] tracking-tighter uppercase mb-4"
+                >
+                  THE COLORS OF
+                </motion.h1>
+                <motion.h1
+                  style={{ x: botTextX }}
+                  className="text-[16vw] font-street leading-[0.75] tracking-tighter uppercase text-white outline-text"
+                >
+                  COMFORT
+                </motion.h1>
+              </div>
+              <div className="h-px w-24 bg-momo-red mx-auto mb-10" />
+              <p className="text-[10px] md:text-xs uppercase tracking-[0.4em] font-black opacity-30 max-w-xl mx-auto px-6 leading-loose">
+                Engineering is hard, eating momos is easy. <br />
+                Welcome to VVCE's unofficial cafeteria.
+              </p>
+            </motion.div>
+          </motion.div>
+
+          {/* Momo Storm */}
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            {/* Ambient Steam/Smoke Particles */}
+            <motion.div
+              animate={{
+                opacity: [0.05, 0.1, 0.05],
+              }}
+              transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+              className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.02),transparent_70%)]"
+              style={{ pointerEvents: 'none', willChange: 'opacity', transform: 'translateZ(0)' }}
+            />
+
+            {/* White Momo (Background - Top Right) */}
+            <motion.img
+              style={{ x: whiteMomoX, y: whiteMomoY, rotate: whiteMomoRotate, opacity: whiteMomoOpacity, willChange: 'transform', transform: 'translateZ(0)' }}
+              src="/images/flying_white.png"
+              className="absolute top-10 right-10 md:top-24 md:right-24 w-[25vw] md:w-[12vw] z-10"
+            />
+
+            {/* Red Momo (Top Left) */}
+            <motion.img
+              style={{ x: redMomoX, y: redMomoY, rotate: redMomoRotate, willChange: 'transform', transform: 'translateZ(0)' }}
+              src="/images/flying_red.png"
+              className="absolute top-10 left-10 md:top-24 md:left-24 w-[40vw] md:w-[14vw] z-30 filter contrast-125"
+            />
+
+            {/* Yellow Momo (Bottom Right) */}
+            <motion.img
+              style={{ x: yellowMomoX, y: yellowMomoY, rotate: yellowMomoRotate, willChange: 'transform', transform: 'translateZ(0)' }}
+              src="/images/flying_yellow.png"
+              className="absolute bottom-10 right-10 md:bottom-24 md:right-24 w-[45vw] md:w-[16vw] z-30 filter contrast-125"
+            />
+
+            {/* Green Momo (Bottom Left) */}
+            <motion.img
+              style={{ x: greenMomoX, y: greenMomoY, rotate: greenMomoRotate, willChange: 'transform', transform: 'translateZ(0)' }}
+              src="/images/flying_green.png"
+              className="absolute bottom-20 left-20 md:bottom-32 md:left-32 w-[35vw] md:w-[10vw] z-30 filter contrast-125"
+            />
+
+            {/* Mutton Momo (Central Foreground - Fast Zoom) */}
+            <motion.img
+              style={{ scale: muttonMomoScale, x: muttonMomoX, y: muttonMomoY, rotate: muttonMomoRotate, willChange: 'transform', transform: 'translateZ(0)' }}
+              src="/images/flying_mutton.png"
+              className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[55vw] md:w-[22vw] z-40 filter contrast-125"
+            />
+          </div>
+        </div>
       </section>
 
-      {/* The Sizzle Section */}
-      <section id="legacy" className="py-40 px-6 md:px-24 flex flex-col lg:flex-row items-center gap-20 max-w-7xl mx-auto">
-        <div className="flex-1 order-2 lg:order-1">
+      {/* The Sizzle Section (Sticky Reveal) */}
+      <section ref={sizzleRef} id="legacy" className="relative py-60 px-6 md:px-24 bg-black overflow-hidden">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-32 relative z-10">
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
+            className="flex-1 order-2 md:order-1"
           >
-            <div className="inline-block px-4 py-1 rounded-full bg-momo-yellow/10 border border-momo-yellow/20 text-momo-yellow text-xs font-bold uppercase tracking-widest mb-6">Since 2008</div>
-            <h2 className="text-5xl md:text-8xl font-street mb-8 leading-none">
-              FROM A STALL  <br /><span className="text-momo-yellow italic">TO AN ICON</span>
-            </h2>
-            <p className="text-xl md:text-2xl font-light opacity-70 mb-12 leading-relaxed">
-              What started as a humble stall near Surya Bakery has grown into a culinary landmark.
-              Our secret? The same traditional tandoor, the same family recipes, and the same
-              unwavering heat that Mysuru loves.
+            <SectionHeading
+              subtitle="The Secret Sauce"
+              title={<>THE<br /><span className="text-momo-red">SIZZLE</span></>}
+              accent="white"
+            />
+            <p className="text-xl md:text-2xl font-light text-white/60 leading-relaxed mb-12">
+              Our momos aren't just cooked; they're engineered for maximum dopamine.
+              Tandoor-fired at blistering temperatures to lock in that smoky "Umm-Momos" flavor.
             </p>
             <div className="flex gap-12">
               <div className="flex flex-col">
-                <span className="text-5xl font-street text-momo-red leading-none">02</span>
-                <span className="text-[10px] uppercase tracking-widest opacity-50 mt-2">Branches</span>
+                <span className="text-4xl font-street text-momo-yellow">500°C</span>
+                <span className="text-[10px] uppercase tracking-widest opacity-40">Tandoor Temp</span>
               </div>
+              <div className="w-px h-12 bg-white/10" />
               <div className="flex flex-col">
-                <span className="text-5xl font-street text-momo-red leading-none">50+</span>
-                <span className="text-[10px] uppercase tracking-widest opacity-50 mt-2">Daily Batches</span>
+                <span className="text-4xl font-street text-momo-red">100%</span>
+                <span className="text-[10px] uppercase tracking-widest opacity-40">Hand-Crafted</span>
               </div>
             </div>
           </motion.div>
+          <div className="flex-1 order-1 md:order-2">
+            <motion.div
+              style={{
+                rotate: useTransform(smoothProgress, [0.2, 0.4], [5, -5]),
+                scale: useTransform(smoothProgress, [0.2, 0.4], [1, 1.1])
+              }}
+              className="relative rounded-[3rem] overflow-hidden shadow-[0_50px_100px_rgba(0,0,0,0.8)] border border-white/5"
+            >
+              <img src="/images/tandoor.png" className="w-full h-full object-cover mix-blend-lighten" alt="Tandoor" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-60" />
+            </motion.div>
+          </div>
         </div>
-        <div className="flex-1 order-1 lg:order-2 relative w-full aspect-square">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9, rotate: -2 }}
-            whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
-            transition={{ duration: 1 }}
-            viewport={{ once: true }}
-            className="relative z-10 w-full h-full rounded-[2rem] overflow-hidden shadow-2xl shadow-momo-red/20 group"
-          >
-            <img src="/images/tandoor.png" alt="Tandoor pot" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-          </motion.div>
-          <div className="absolute -top-10 -right-10 w-40 h-40 bg-momo-yellow/10 blur-[100px] rounded-full" />
-          <div className="absolute -bottom-10 -left-10 w-60 h-60 bg-momo-red/10 blur-[120px] rounded-full" />
-        </div>
+
+        {/* Parallax Background Text */}
+        <motion.div
+          style={{
+            x: useTransform(smoothProgress, [0.1, 0.4], ["10%", "-50%"]),
+            willChange: 'transform',
+            transform: 'translateZ(0)'
+          }}
+          className="absolute top-1/2 left-0 text-[30vw] font-street opacity-[0.02] whitespace-nowrap pointer-events-none select-none"
+        >
+          STREET PRIDE MYSURU PRIDE
+        </motion.div>
       </section>
 
-      {/* Rainbow Menu Section */}
-      <section id="menu" className="py-40 bg-black/30 border-y border-white/5">
-        <div className="px-6 md:px-24 mb-20 text-center md:text-left">
+      {/* Palette of Flavors (Immersive Horizontal Scroll) */}
+      <section ref={horizontalRef} id="menu" className="relative h-[400vh] bg-black">
+        <div className="sticky top-0 h-screen overflow-hidden flex items-center">
+          {/* Parallax Background Heading */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            style={{
+              x: useTransform(smoothProgress, [0.3, 0.8], ["20%", "-40%"]),
+              willChange: 'transform',
+              transform: 'translateZ(0)'
+            }}
+            className="absolute top-1/2 -translate-y-1/2 left-0 whitespace-nowrap text-[25vw] font-street opacity-[0.03] select-none pointer-events-none"
           >
-            <h2 className="text-6xl md:text-9xl font-street leading-none">
-              PALETTE OF <span className="text-momo-green">FLAVORS</span>
-            </h2>
-            <div className="flex flex-col md:flex-row md:items-center gap-4 mt-6">
-              <p className="text-xl opacity-60 uppercase tracking-[0.2em] font-light">The Rainbow Menu</p>
-              <div className="hidden md:block h-px w-20 bg-white/20" />
-              <p className="text-sm opacity-40 uppercase tracking-widest">Handcrafted & Wood-Fired</p>
+            PALETTE OF FLAVORS RAJU MOMOS THE RAINBOW
+          </motion.div>
+
+          <div className="relative z-10 w-full">
+            <div className="max-w-7xl mx-auto px-6 md:px-24 mb-16">
+              <SectionHeading
+                subtitle="The Rainbow Menu"
+                title={<>A SYMPHONY<br />OF <span className="text-momo-red">SPICE</span></>}
+                accent="white"
+              />
             </div>
-          </motion.div>
-        </div>
 
-        <div className="flex gap-8 px-6 md:px-24 overflow-x-auto pb-12 snap-x no-scrollbar">
-          <Card
-            title="Red Barbeque"
-            price="150"
-            color="momo-red"
-            image="/images/red_momo.png"
-            description="Our signature spicy chicken momos glazed in a fiery BBQ sauce and charred to perfection."
-          />
-          <Card
-            title="Yellow Tandoori"
-            price="140"
-            color="momo-yellow"
-            image="/images/hero.png" // Placeholder
-            description="Classic wood-fired taste with a rich turmeric and yogurt marinade."
-          />
-          <Card
-            title="Green Haryali"
-            price="130"
-            color="momo-green"
-            image="/images/hero.png" // Placeholder
-            description="A fresh mint and spinach infusion that's both healthy and spicy."
-          />
-          <Card
-            title="Classic Malai"
-            price="160"
-            color="white"
-            image="/images/red_momo.png" // Placeholder
-            description="Creamy, melt-in-your-mouth momos for those who love it rich and mild."
-          />
-        </div>
-      </section>
-
-      {/* VVCE Legacy Section */}
-      <section className="py-32 px-6 md:px-24 bg-momo-red">
-        <div className="max-w-5xl mx-auto text-center">
-          <h2 className="text-6xl md:text-9xl font-street text-black leading-none mb-12">
-            VVCE'S <br />EXTRACURRICULAR <br />HEADQUARTERS
-          </h2>
-          <p className="text-2xl md:text-3xl font-medium text-black/80 leading-relaxed mb-16">
-            Located right across Vidyavardhaka College of Engineering, Raju Momos has been
-            the witness to thousands of project brainstorms, pre-exam stress snacks,
-            and post-exam celebrations.
-          </p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <span className="px-8 py-3 bg-black text-white rounded-full font-bold uppercase tracking-widest text-sm">Surya Bakery Circle</span>
-            <span className="px-8 py-3 bg-black text-white rounded-full font-bold uppercase tracking-widest text-sm">Vijayanagar 2nd Stage</span>
+            <motion.div
+              style={{
+                x: useTransform(smoothProgress, [0.3, 0.8], ["0%", "-150%"]),
+                willChange: 'transform',
+                transform: 'translateZ(0)'
+              }}
+              className="flex gap-12 px-6 md:px-24"
+            >
+              <Card
+                title="Red Barbeque"
+                subtitle="The Fire Starter"
+                price="150"
+                color="#ff3e3e"
+                image="/images/flying_red.png"
+                description="A stress-snack that actually hits back. Smoky BBQ glaze charred to perfection."
+              />
+              <Card
+                title="Yellow Tandoori"
+                subtitle="The Classic"
+                price="160"
+                color="#ffb800"
+                image="/images/flying_yellow.png"
+                description="The OG that started it all. Infused with 12 secret spices and baked in clay."
+              />
+              <Card
+                title="Green Haryali"
+                subtitle="The Fresh Kick"
+                price="175"
+                color="#2ecc71"
+                image="/images/flying_green.png"
+                description="Fresh mint, vibrant spinach, and spices that wake you up faster than a 9 AM lab."
+              />
+              <Card
+                title="White Malai"
+                subtitle="The Velvet Touch"
+                price="160"
+                color="#f5f5f5"
+                image="/images/flying_white.png"
+                description="Creamy, mild, and absolutely decadent. For those days when you need a hug in momo form."
+              />
+              <Card
+                title="Mutton Steamed"
+                subtitle="The OG High"
+                price="180"
+                color="#c0392b"
+                image="/images/flying_mutton.png"
+                description="The connoisseur's choice. Hand-minced mutton, perfectly seasoned, and steamed to silk."
+              />
+            </motion.div>
           </div>
         </div>
       </section>
 
-      {/* Wall of Love Marquee (CSS only for simplicity) */}
-      <section className="py-32 bg-charcoal overflow-hidden border-y border-white/5">
+      {/* Review Marquee */}
+      <section className="py-40 bg-black/50 overflow-hidden border-y border-white/10">
+        <div className="text-center mb-20 uppercase tracking-[0.5em] text-[10px] opacity-40">What they say on Google Maps</div>
         <div className="flex whitespace-nowrap animate-marquee">
-          {[1, 2, 3, 4, 5, 6].map(i => (
-            <div key={i} className="flex gap-16 px-8 items-center">
-              <div className="flex flex-col gap-2">
-                <div className="flex text-momo-yellow gap-1"><Star size={16} fill="currentColor" /><Star size={16} fill="currentColor" /><Star size={16} fill="currentColor" /><Star size={16} fill="currentColor" /><Star size={16} fill="currentColor" /></div>
-                <p className="text-2xl font-light italic opacity-90 italic">"Best momos in Mysuru. Period."</p>
-                <span className="text-sm font-bold uppercase tracking-widest text-momo-red">Ismail B.</span>
+          {[1, 2, 3, 4].map(i => (
+            <div key={i} className="flex gap-20 px-10 items-center">
+              <div className="glass p-12 rounded-[2rem] w-[400px]">
+                <div className="flex text-momo-yellow gap-1 mb-4">
+                  {[1, 2, 3, 4, 5].map(s => <Star key={s} size={14} fill="currentColor" />)}
+                </div>
+                <p className="text-xl font-light italic opacity-90 mb-6 leading-relaxed">
+                  "Best mutton momos in Mysuru! Affordable, spicy, and absolutely addictive. The VVCE student lifeline."
+                </p>
+                <span className="text-[10px] font-black uppercase tracking-widest text-momo-red">Ismail B.</span>
               </div>
-              <div className="w-1 h-12 bg-white/10" />
-              <div className="flex flex-col gap-2">
-                <div className="flex text-momo-yellow gap-1"><Star size={16} fill="currentColor" /><Star size={16} fill="currentColor" /><Star size={16} fill="currentColor" /><Star size={16} fill="currentColor" /><Star size={16} fill="currentColor" /></div>
-                <p className="text-2xl font-light italic opacity-90 italic">"The Haryali Veg is a perfect blend of spices."</p>
-                <span className="text-sm font-bold uppercase tracking-widest text-momo-red">Rahul K.</span>
+              <div className="glass p-12 rounded-[2rem] w-[400px]">
+                <div className="flex text-momo-yellow gap-1 mb-4">
+                  {[1, 2, 3, 4, 5].map(s => <Star key={s} size={14} fill="currentColor" />)}
+                </div>
+                <p className="text-xl font-light italic opacity-90 mb-6 leading-relaxed">
+                  "The Haryali spice mix is unmatched. Best experience near VVCE gates for years."
+                </p>
+                <span className="text-[10px] font-black uppercase tracking-widest text-momo-red">Rahul K.</span>
               </div>
-              <div className="w-1 h-12 bg-white/10" />
             </div>
           ))}
         </div>
       </section>
 
-      {/* Locations Section */}
-      <section id="locations" className="py-32 px-6 md:px-24">
-        <div className="grid md:grid-cols-2 gap-16">
-          <div className="glass p-12 rounded-3xl">
-            <h3 className="text-4xl font-street mb-6 flex items-center gap-4">
-              <MapPin className="text-momo-red" /> THE OG BRANCH
-            </h3>
-            <p className="text-xl font-light opacity-70 mb-8">
-              Surya Bakery Circle, Opposite VVCE, <br />
-              Vijayanagar 2nd Stage, Mysuru.
+      {/* VVCE Student Hub */}
+      <section className="py-60 px-6 md:px-24 bg-black text-white overflow-hidden relative border-y border-white/5">
+        <div className="max-w-6xl mx-auto text-center py-20 relative z-10">
+          <motion.div
+            initial={{ y: 50, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true }}
+          >
+            <span className="font-bold uppercase tracking-[0.5em] text-[10px] mb-6 block text-momo-red">Local Landmark</span>
+            <h2 className="text-[10vw] font-street leading-[0.85] tracking-tighter mb-12">
+              VVCE'S <br />RESEARCH & <br />DEVELOPMENT LAB
+            </h2>
+            <p className="text-2xl md:text-4xl font-light leading-relaxed max-w-4xl mx-auto mb-16 px-4 opacity-80">
+              Located right across the gates of Vidyavardhaka College of Engineering.
+              We've fueled three generations of engineers through dead-ends,
+              compiled errors, and 4 AM project marathons.
             </p>
-            <a href="#" className="inline-flex items-center gap-2 text-momo-red font-bold uppercase tracking-widest hover:gap-4 transition-all">
-              Get Directions <ArrowRight size={20} />
-            </a>
+            <div className="flex flex-wrap justify-center gap-6">
+              <div className="border border-white/10 px-10 py-4 rounded-full font-black uppercase tracking-widest text-xs shadow-xl backdrop-blur-md">
+                Est. 2008
+              </div>
+              <div className="bg-white text-black px-10 py-4 rounded-full font-black uppercase tracking-widest text-xs shadow-xl">
+                Official Hunger Partner
+              </div>
+            </div>
+          </motion.div>
+        </div>
+
+        {/* Parallax Background Puns */}
+        <motion.div
+          style={{ x: useTransform(scrollYProgress, [0.6, 0.8], [0, -200]) }}
+          className="absolute bottom-10 left-0 text-[15vw] font-street opacity-[0.03] whitespace-nowrap pointer-events-none"
+        >
+          ENGINEERING IS HARD EATING MOMOS IS EASY
+        </motion.div>
+      </section>
+
+      {/* Locations & Contact */}
+      <section id="locations" className="py-60 px-6 md:px-24">
+        <div className="grid lg:grid-cols-2 gap-24 max-w-7xl mx-auto">
+          <div className="space-y-12">
+            <SectionHeading
+              subtitle="Visit the Gates"
+              title={<>FIND OUR<br /><span className="text-momo-red">BRANCHES</span></>}
+              accent="momo-yellow"
+            />
+
+            <div className="glass p-12 rounded-[3rem] hover:border-momo-red/50 transition-colors group">
+              <h3 className="text-3xl font-street mb-4 flex items-center gap-4 group-hover:text-momo-red transition-colors">
+                <MapPin size={24} /> SURYA BAKERY (OG)
+              </h3>
+              <p className="text-xl font-light opacity-60 mb-8 leading-relaxed">
+                Opposite VVCE Main Gate, <br />
+                Vijayanagar 2nd Stage, Mysuru. <br />
+                <span className="text-sm font-bold mt-2 block">11:30 AM – 10:30 PM</span>
+              </p>
+              <button className="flex items-center gap-3 text-xs font-black uppercase tracking-widest hover:gap-6 transition-all">
+                Open on Maps <ArrowRight size={14} />
+              </button>
+            </div>
+
+            <div className="glass p-12 rounded-[3rem] hover:border-momo-yellow/50 transition-colors group">
+              <h3 className="text-3xl font-street mb-4 flex items-center gap-4 group-hover:text-momo-yellow transition-colors">
+                <MapPin size={24} /> FAMILY RESTAURANT
+              </h3>
+              <p className="text-xl font-light opacity-60 mb-8 leading-relaxed">
+                High Tension Double Road, <br />
+                Kumbarakoppal, Mysuru. <br />
+                <span className="text-sm font-bold mt-2 block">12:30 PM – 11:00 PM</span>
+              </p>
+              <button className="flex items-center gap-3 text-xs font-black uppercase tracking-widest hover:gap-6 transition-all text-momo-yellow">
+                Open on Maps <ArrowRight size={14} />
+              </button>
+            </div>
           </div>
-          <div className="glass p-12 rounded-3xl border-l-4 border-momo-yellow">
-            <h3 className="text-4xl font-street mb-6 flex items-center gap-4">
-              <MapPin className="text-momo-yellow" /> FAMILY RESTAURANT
-            </h3>
-            <p className="text-xl font-light opacity-70 mb-8">
-              High Tension Double Road, Kumbarakoppal, <br />
-              Vijayanagar 2nd Stage, Mysuru.
-            </p>
-            <a href="#" className="inline-flex items-center gap-2 text-momo-yellow font-bold uppercase tracking-widest hover:gap-4 transition-all">
-              Get Directions <ArrowRight size={20} />
-            </a>
+
+          <div className="relative">
+            <div className="sticky top-40 glass p-16 rounded-[4rem] text-center overflow-hidden">
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-1 bg-momo-red" />
+              <h3 className="text-5xl font-street mb-8 uppercase">Let's Talk Momos</h3>
+              <p className="text-xl font-light opacity-60 mb-12">
+                Questions? Bulk orders for college fests? Just want to say hi?
+              </p>
+              <div className="flex flex-col gap-4">
+                <a href="tel:+917259721731" className="flex items-center justify-center gap-4 bg-white text-black py-6 rounded-full font-black uppercase tracking-[0.2em] hover:bg-momo-red hover:text-white transition-all">
+                  <Phone size={20} /> +91 72597 21731
+                </a>
+                <a href="#" className="flex items-center justify-center gap-4 border border-white/20 py-6 rounded-full font-black uppercase tracking-[0.2em] hover:bg-white/10 transition-all">
+                  <Instagram size={20} /> @rajumomosmysuru
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Floating Action Bar */}
-      <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-2xl">
-        <div className="glass rounded-full px-8 py-4 flex items-center justify-between shadow-2xl border-white/20">
-          <div className="flex gap-6 items-center">
-            <a href="tel:+917259721731" className="p-2 hover:bg-white/10 rounded-full transition-colors"><Phone size={20} /></a>
-            <a href="#" className="p-2 hover:bg-white/10 rounded-full transition-colors"><Instagram size={20} /></a>
-            <a href="#" className="p-2 hover:bg-white/10 rounded-full transition-colors"><MapPin size={20} /></a>
+      <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-3xl">
+        <div className="glass rounded-full p-4 md:px-10 flex items-center justify-between shadow-[0_30px_60px_rgba(0,0,0,0.5)] border-white/20 backdrop-blur-2xl">
+          <div className="flex gap-4 md:gap-8 items-center text-white/50">
+            <a href="tel:+917259721731" className="p-2 hover:text-white transition-colors"><Phone size={20} /></a>
+            <a href="#" className="p-2 hover:text-white transition-colors"><Instagram size={20} /></a>
+            <div className="w-px h-6 bg-white/10 mx-2" />
+            <a href="#locations" className="text-[10px] font-black uppercase tracking-widest hover:text-white transition-colors hidden sm:block">Find Us</a>
           </div>
-          <button className="flex items-center gap-3 bg-momo-red px-6 py-2 rounded-full font-bold text-sm tracking-widest uppercase hover:scale-105 transition-transform active:scale-95">
-            <ShoppingBag size={18} /> Order Now
-          </button>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="flex items-center gap-3 bg-momo-red px-8 py-3 rounded-full font-black text-xs tracking-[0.2em] uppercase shadow-lg shadow-momo-red/30"
+          >
+            <ShoppingBag size={18} /> Order on Swiggy
+          </motion.button>
         </div>
       </div>
 
       {/* Footer */}
-      <footer className="py-20 text-center border-t border-white/5 opacity-50 text-sm tracking-widest uppercase">
-        <p>Made for Momo Lovers in Mysuru</p>
-        <p className="mt-2 text-momo-red">Open: 11:30 AM – 10:30 PM</p>
-        <p className="mt-8 text-[10px]">© 2024 Raju Momos. Not really, just a cool site.</p>
+      <footer className="py-32 text-center opacity-30 text-[10px] font-black tracking-[0.4em] uppercase">
+        <div className="flex justify-center gap-8 mb-8">
+          <span className="hover:text-momo-red cursor-pointer transition-colors">Instagram</span>
+          <span className="hover:text-momo-red cursor-pointer transition-colors">Swiggy</span>
+          <span className="hover:text-momo-red cursor-pointer transition-colors">Zomato</span>
+        </div>
+        <p>Made for Momo Lovers in Mysuru • Engineering the Perfect Spice</p>
+        <p className="mt-4">© 2024 Raju Momos Mysuru</p>
       </footer>
-    </div>
+    </motion.div>
   );
 }
 
