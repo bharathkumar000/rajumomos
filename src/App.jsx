@@ -1,17 +1,17 @@
-import React, { useRef, useMemo } from 'react';
-import { motion, useScroll, useTransform, useSpring, useInView } from 'framer-motion';
-import { MapPin, Phone, Instagram, ShoppingBag, Star, ArrowRight, Menu as MenuIcon, MessageCircle } from 'lucide-react';
+import React, { useRef, useMemo, useState } from 'react';
+import { motion, useScroll, useTransform, useSpring, useInView, AnimatePresence } from 'framer-motion';
+import { MapPin, Phone, Instagram, ShoppingBag, Star, ArrowRight, Menu as MenuIcon, MessageCircle, X } from 'lucide-react';
 
-const Card = ({ title, price, subtitle, color, image, description }) => (
+const Card = ({ title, price, subtitle, color, image, description, onOrder }) => (
   <motion.div
     whileHover={{ y: -15, scale: 1.02 }}
-    className="relative group min-w-[320px] md:min-w-[400px] h-[500px] rounded-[3rem] overflow-hidden bg-black transition-all duration-500 shadow-2xl"
+    className="relative group min-w-[320px] md:min-w-[380px] h-[460px] rounded-[3rem] overflow-hidden bg-black transition-all duration-500 shadow-2xl"
   >
     <div className={`absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-black z-10`} />
     <img
       src={image}
       alt={title}
-      className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-60 filter brightness-110 contrast-125"
+      className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-60 filter brightness-105 contrast-110"
       style={{ willChange: 'transform', transform: 'translateZ(0)' }}
     />
     <div className="absolute inset-0 z-20 p-10 flex flex-col justify-end">
@@ -26,7 +26,10 @@ const Card = ({ title, price, subtitle, color, image, description }) => (
           <span className="text-[10px] uppercase tracking-widest opacity-40">Starts at</span>
           <span className="text-3xl font-bold text-white tracking-tight">₹{price}</span>
         </div>
-        <button className="group/btn px-8 py-4 bg-white text-black rounded-full font-black text-[10px] tracking-[0.2em] hover:bg-momo-red hover:text-white transition-all duration-300 uppercase flex items-center gap-2">
+        <button
+          onClick={onOrder}
+          className="group/btn px-8 py-4 bg-white text-black rounded-full font-black text-[10px] tracking-[0.2em] hover:bg-momo-red hover:text-white transition-all duration-300 uppercase flex items-center gap-2"
+        >
           Order Now <ArrowRight size={14} className="group-hover/btn:translate-x-1 transition-transform" />
         </button>
       </div>
@@ -39,10 +42,10 @@ const SectionHeading = React.memo(({ title, subtitle, accent }) => (
     initial={{ opacity: 0, y: 30 }}
     whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: true, margin: "-100px" }}
-    className="mb-20 text-center md:text-left"
+    className="mb-8 text-center md:text-left"
   >
     <span className={`text-${accent} font-bold uppercase tracking-[0.4em] text-xs mb-4 block`}>{subtitle}</span>
-    <h2 className="text-6xl md:text-8xl lg:text-9xl font-street leading-[0.9] tracking-tight">
+    <h2 className="text-5xl md:text-7xl lg:text-8xl font-street leading-[0.9] tracking-tight">
       {title}
     </h2>
   </motion.div>
@@ -127,9 +130,9 @@ const Hero = React.memo(({ smoothProgress }) => {
                 rotate: momo.rotate,
                 opacity: momo.opacity || 1,
                 mixBlendMode: 'screen',
-                filter: 'contrast(1.8) brightness(1.6) saturate(1.4)',
-                WebkitMaskImage: 'radial-gradient(circle, black 60%, transparent 85%)',
-                maskImage: 'radial-gradient(circle, black 60%, transparent 85%)',
+                filter: 'contrast(1.1) brightness(1.05) saturate(1.05)',
+                WebkitMaskImage: 'radial-gradient(circle, black 65%, transparent 90%)',
+                maskImage: 'radial-gradient(circle, black 65%, transparent 90%)',
                 willChange: 'transform',
                 transform: 'translateZ(0)'
               }}
@@ -143,9 +146,9 @@ const Hero = React.memo(({ smoothProgress }) => {
               scale: muttonMomoScale,
               y: muttonMomoY,
               mixBlendMode: 'screen',
-              filter: 'contrast(2) brightness(1.8) saturate(1.5)',
-              WebkitMaskImage: 'radial-gradient(circle, black 50%, transparent 80%)',
-              maskImage: 'radial-gradient(circle, black 50%, transparent 80%)',
+              filter: 'contrast(1.15) brightness(1.1) saturate(1.1)',
+              WebkitMaskImage: 'radial-gradient(circle, black 55%, transparent 85%)',
+              maskImage: 'radial-gradient(circle, black 55%, transparent 85%)',
               willChange: 'transform',
               transform: 'translateZ(0)'
             }}
@@ -235,7 +238,7 @@ const MenuSection = React.memo(({ smoothProgress }) => {
           PALETTE OF FLAVORS RAJU MOMOS THE RAINBOW
         </motion.div>
         <div className="relative z-20 w-full">
-          <div className="max-w-7xl mx-auto px-6 md:px-24 mb-24">
+          <div className="max-w-7xl mx-auto px-6 md:px-24 mb-4">
             <SectionHeading subtitle="The Rainbow Menu" title={<>A SYMPHONY<br />OF <span className="text-momo-red">SPICE</span></>} accent="momo-yellow" />
           </div>
           <motion.div style={{ x: cardsX, willChange: 'transform', transform: 'translateZ(0)' }} className="flex gap-12 px-6 md:px-24">
@@ -246,7 +249,16 @@ const MenuSection = React.memo(({ smoothProgress }) => {
               { title: "White Malai", subtitle: "The Velvet Touch", price: "160", color: "#f5f5f5", src: "white", desc: "Creamy, mild, and absolutely decadent. For those days when you need a hug in momo form." },
               { title: "Mutton Steamed", subtitle: "The OG High", price: "180", color: "#c0392b", src: "mutton", desc: "The connoisseur's choice. Hand-minced mutton, perfectly seasoned, and steamed to silk." }
             ].map((card, i) => (
-              <Card key={i} title={card.title} subtitle={card.subtitle} price={card.price} color={card.color} image={`/images/flying_${card.src}.png`} description={card.desc} />
+              <Card
+                key={i}
+                title={card.title}
+                subtitle={card.subtitle}
+                price={card.price}
+                color={card.color}
+                image={`/images/flying_${card.src}.png`}
+                description={card.desc}
+                onOrder={() => window.dispatchEvent(new CustomEvent('openOrder'))}
+              />
             ))}
           </motion.div>
         </div>
@@ -264,7 +276,7 @@ const ReviewSection = React.memo(() => (
             { name: "Ismail B.", text: "Best mutton momos in Mysuru! Affordable, spicy, and absolutely addictive. The VVCE student lifeline." },
             { name: "Rahul K.", text: "The Haryali spice mix is unmatched. Best experience near VVCE gates for years." }
           ].map((review, j) => (
-            <div key={j} className="glass p-12 rounded-[2rem] w-[400px]">
+            <div key={j} className="glass p-12 rounded-[2rem] w-[400px] whitespace-normal">
               <div className="flex text-momo-yellow gap-1 mb-4">
                 {[1, 2, 3, 4, 5].map(s => <Star key={s} size={14} fill="currentColor" />)}
               </div>
@@ -436,7 +448,7 @@ const GallerySection = React.memo(() => {
                 transition={{ duration: 1.2, ease: "circOut" }}
                 src={img.src}
                 alt={img.label}
-                className="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition-all duration-1000 grayscale-[0.3] group-hover:grayscale-0"
+                className="w-full h-full object-cover opacity-100 transition-all duration-1000 grayscale-0"
                 style={{ willChange: 'transform', transform: 'translateZ(0)' }}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-40 group-hover:opacity-80 transition-opacity duration-700 pointer-events-none" />
@@ -454,7 +466,75 @@ const GallerySection = React.memo(() => {
   );
 });
 
+const OrderModal = ({ isOpen, onClose }) => (
+  <AnimatePresence>
+    {isOpen && (
+      <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={onClose}
+          className="absolute inset-0 bg-black/80 backdrop-blur-md"
+        />
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.9, y: 20 }}
+          className="relative bg-zinc-900 border border-white/10 w-full max-w-md rounded-[3rem] overflow-hidden shadow-2xl"
+        >
+          <button onClick={onClose} className="absolute top-8 right-8 text-white/40 hover:text-white transition-colors">
+            <X size={24} />
+          </button>
+
+          <div className="p-12">
+            <div className="mb-10">
+              <span className="text-momo-red font-bold uppercase tracking-[0.4em] text-[10px] mb-2 block">Choose Your App</span>
+              <h3 className="text-5xl font-street text-white tracking-widest">Order <span className="text-momo-red">Now</span></h3>
+            </div>
+
+            <div className="grid gap-4">
+              <a
+                href="https://www.swiggy.com"
+                target="_blank"
+                className="flex items-center justify-between group p-6 bg-white/5 border border-white/5 rounded-3xl hover:bg-[#fc8019] transition-all duration-300 group"
+              >
+                <div className="flex items-center gap-6">
+                  <div className="w-12 h-12 bg-[#fc8019]/20 rounded-2xl flex items-center justify-center group-hover:bg-white/20 transition-colors">
+                    <ShoppingBag size={24} className="text-[#fc8019] group-hover:text-white transition-colors" />
+                  </div>
+                  <span className="text-xl font-street tracking-widest text-white">SWIGGY</span>
+                </div>
+                <ArrowRight className="text-white/20 group-hover:translate-x-1 group-hover:text-white transition-all" />
+              </a>
+
+              <a
+                href="https://www.zomato.com"
+                target="_blank"
+                className="flex items-center justify-between p-6 bg-white/5 border border-white/5 rounded-3xl hover:bg-[#cb202d] transition-all duration-300 group"
+              >
+                <div className="flex items-center gap-6">
+                  <div className="w-12 h-12 bg-[#cb202d]/20 rounded-2xl flex items-center justify-center group-hover:bg-white/20 transition-colors">
+                    <ShoppingBag size={24} className="text-[#cb202d] group-hover:text-white transition-colors" />
+                  </div>
+                  <span className="text-xl font-street tracking-widest text-white">ZOMATO</span>
+                </div>
+                <ArrowRight className="text-white/20 group-hover:translate-x-1 group-hover:text-white transition-all" />
+              </a>
+            </div>
+
+            <p className="mt-10 text-[10px] uppercase font-bold tracking-[0.2em] text-white/20 text-center">
+              Curating the perfect spice since 2014
+            </p>
+          </div>
+        </motion.div>
+      </div>
+    )}
+  </AnimatePresence>
+);
+
 function App() {
+  const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
   const containerRef = useRef(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -467,6 +547,12 @@ function App() {
     mass: 0.8,
     restDelta: 0.01
   });
+
+  React.useEffect(() => {
+    const handleOpen = () => setIsOrderModalOpen(true);
+    window.addEventListener('openOrder', handleOpen);
+    return () => window.removeEventListener('openOrder', handleOpen);
+  }, []);
 
   return (
     <motion.div ref={containerRef} className="bg-black text-white selection:bg-momo-red selection:text-white">
@@ -482,10 +568,17 @@ function App() {
           {["menu", "legacy", "locations"].map(id => (
             <a key={id} href={`#${id}`} className="text-white/60 hover:text-white transition-all duration-300 capitalize">{id.replace('legacy', 'The Sizzle').replace('menu', 'The Rainbow')}</a>
           ))}
-          <button className="bg-momo-red text-white py-4 px-10 rounded-full hover:scale-105 active:scale-95 transition-all shadow-2xl shadow-momo-red/30">Order Now</button>
+          <button
+            onClick={() => setIsOrderModalOpen(true)}
+            className="bg-momo-red text-white py-4 px-10 rounded-full hover:scale-105 active:scale-95 transition-all shadow-2xl shadow-momo-red/30"
+          >
+            Order Now
+          </button>
         </div>
         <button className="lg:hidden bg-white/10 backdrop-blur-xl p-5 rounded-full border border-white/20 pointer-events-auto shadow-2xl"><MenuIcon size={24} /></button>
       </nav>
+
+      <OrderModal isOpen={isOrderModalOpen} onClose={() => setIsOrderModalOpen(false)} />
 
       <Hero smoothProgress={smoothProgress} />
       <SizzleSection smoothProgress={smoothProgress} />
@@ -494,7 +587,6 @@ function App() {
       <GallerySection />
       <HubSection scrollYProgress={scrollYProgress} />
       <LocationSection />
-      <ActionBar scrollYProgress={scrollYProgress} />
     </motion.div>
   );
 }
