@@ -1,11 +1,11 @@
-# 🥟 Raju Momos | The Soul of Mysuru
+# 🥟 Hill Special Momos | The Soul of Mysuru
 
 [![Vite](https://img.shields.io/badge/Vite-B73BFE?style=for-the-badge&logo=vite&logoColor=FFD62E)](https://vitejs.dev/)
 [![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![Framer Motion](https://img.shields.io/badge/Framer_Motion-0055FF?style=for-the-badge&logo=framer&logoColor=white)](https://www.framer.com/motion/)
 
-A premium, immersive **scrollytelling experience** built for **Raju Momos**, Mysuru's legendary street-food destination. This website takes you on a journey from the smoky tandoor to the vibrant "Rainbow Menu" that fuels the students of Vidyavardhaka College of Engineering (VVCE).
+A premium, immersive **scrollytelling experience** built for **Hill Special Momos**, Mysuru's legendary street-food destination. This website takes you on a journey from the smoky tandoor to the vibrant "Rainbow Menu" that fuels the students of Vidyavardhaka College of Engineering (VVCE).
 
 ---
 
@@ -38,7 +38,7 @@ Ensure you have [Node.js](https://nodejs.org/) installed on your machine.
 ### 2. Installation
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/rajumomo.git
+git clone https://github.com/yourusername/hillspecialmomos.git
 
 # Navigate into the project directory
 cd rajumomo
@@ -61,7 +61,6 @@ Navigate to `http://localhost:5173` to see the magic!
 ```text
 rajumomo/
 ├── public/                 # Static assets
-│   └── images/             # HD AI-generated momo assets
 ├── src/
 │   ├── App.jsx             # Main Scrollytelling Logic & Sections
 │   ├── index.css           # Tailwind v4 Config & Custom Styles
@@ -72,10 +71,10 @@ rajumomo/
 
 ---
 
-## 📍 The Locations
+## 📍 The Location
 
-*   **The OG Stall:** Surya Bakery Circle, Opposite VVCE Gate, Vijayanagar 2nd Stage.
-*   **Family Restaurant:** High Tension Double Road, Kumbarakoppal, Mysuru.
+*   **BVB Hub:** In front of BVB, near Sutra, Hubli.
+
 
 ---
 
@@ -84,3 +83,4 @@ rajumomo/
 Built with ❤️ for Momo Lovers in Mysuru.
 
 *"Engineering is hard, eating momos is easy."*
+
