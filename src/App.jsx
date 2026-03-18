@@ -39,7 +39,7 @@ const Card = ({ title, price, subtitle, color, image, description, spice, onOrde
         transformStyle: "preserve-3d",
       }}
       whileHover={{ y: -15, scale: 1.02 }}
-      className="relative group min-w-[280px] sm:min-w-[320px] md:min-w-[380px] h-[440px] md:h-[460px] rounded-[2.5rem] md:rounded-[3rem] overflow-hidden bg-black transition-all duration-500 shadow-2xl glass-premium"
+      className="relative group min-w-[280px] sm:min-w-[320px] md:min-w-[380px] h-[400px] md:h-[460px] rounded-[2.5rem] md:rounded-[3rem] overflow-hidden bg-black transition-all duration-500 shadow-2xl glass-premium"
     >
       <div 
         style={{ transform: "translateZ(50px)" }}
@@ -104,13 +104,13 @@ const GlobalBackground = React.memo(({ progress }) => {
   const driftY4 = useTransform(progress, [0, 1], [0, 100]);
 
   const momos = [
-    { src: 'white', x: driftX1, y: driftY1, rotate: -45, pos: 'top-10 right-10 md:top-24 md:right-24', w: 'w-[24vw] md:w-[15vw]', opacity: 0.6 },
-    { src: 'red', x: driftX2, y: driftY2, rotate: 15, pos: 'top-10 left-10 md:top-24 md:left-24', w: 'w-[38vw] md:w-[18vw]', opacity: 0.8 },
-    { src: 'yellow', x: driftX3, y: driftY3, rotate: -10, pos: 'bottom-10 right-10 md:bottom-24 md:right-24', w: 'w-[42vw] md:w-[20vw]', opacity: 0.7 },
-    { src: 'green', x: driftX4, y: driftY4, rotate: 45, pos: 'bottom-20 left-20 md:bottom-32 md:left-32', w: 'w-[34vw] md:w-[13vw]', opacity: 0.6 }
+    { src: 'white', x: driftX1, y: driftY1, rotate: -45, pos: 'top-10 right-10 md:top-24 md:right-24', w: 'w-[18vw] md:w-[15vw]', opacity: 0.75 },
+    { src: 'red', x: driftX2, y: driftY2, rotate: 15, pos: 'top-10 left-10 md:top-24 md:left-24', w: 'w-[28vw] md:w-[18vw]', opacity: 0.9 },
+    { src: 'yellow', x: driftX3, y: driftY3, rotate: -10, pos: 'bottom-10 right-10 md:bottom-24 md:right-24', w: 'w-[32vw] md:w-[20vw]', opacity: 0.8 },
+    { src: 'green', x: driftX4, y: driftY4, rotate: 45, pos: 'bottom-20 left-20 md:bottom-32 md:left-32', w: 'w-[24vw] md:w-[13vw]', opacity: 0.75 }
   ];
 
-  const bgOpacity = useTransform(progress, [0, 0.15, 1], [0.8, 0.35, 0.35]);
+  const bgOpacity = useTransform(progress, [0, 0.15, 1], [0.95, 0.45, 0.45]);
   const bgZIndex = -10;
 
   return (
@@ -145,7 +145,7 @@ const GlobalBackground = React.memo(({ progress }) => {
               rotate: m.rotate,
               opacity: m.opacity,
               mixBlendMode: 'screen',
-              filter: 'contrast(1.2) brightness(1.1) saturate(1)',
+              filter: 'contrast(1.2) brightness(1.3) saturate(1.1)',
               WebkitMaskImage: 'radial-gradient(circle at center, black 40%, transparent 75%)',
               maskImage: 'radial-gradient(circle at center, black 40%, transparent 75%)',
               willChange: 'transform',
@@ -246,9 +246,9 @@ const Hero = React.memo(({ smoothProgress }) => {
             willChange: 'transform, opacity',
             transform: 'translateZ(0)'
           }}
-          className="absolute inset-0 z-0 bg-black"
+          className="absolute inset-0 z-0 bg-transparent"
         >
-          <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black z-10" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/60 z-10" />
         </motion.div>
 
         <motion.div
@@ -260,11 +260,11 @@ const Hero = React.memo(({ smoothProgress }) => {
             <span className="text-momo-yellow font-bold uppercase tracking-[0.5em] text-xs mb-12 block px-4 border-x border-momo-yellow/30 mx-auto w-fit">
               Authentic Himalayan Soul
             </span>
-            <div className="flex flex-col mb-4 md:mb-6">
-              <motion.h1 style={{ x: topTextX }} className="text-[16vw] md:text-[14vw] font-street leading-[0.7] tracking-tighter uppercase">
+            <div className="flex flex-col mb-4 md:mb-6 px-4">
+              <motion.h1 style={{ x: topTextX }} className="text-[14vw] sm:text-[14vw] md:text-[14vw] font-street leading-[0.8] tracking-tighter uppercase">
                 <CharReveal text="MYSURU'S FAVORITE" />
               </motion.h1>
-              <motion.h1 style={{ x: botTextX }} className="text-[18vw] md:text-[16vw] font-street leading-[0.7] tracking-tight uppercase text-white outline-text -mt-[2vw]">
+              <motion.h1 style={{ x: botTextX }} className="text-[16vw] sm:text-[16vw] md:text-[16vw] font-street leading-[0.8] tracking-tight uppercase text-white outline-text -mt-[1vw]">
                 <CharReveal text="MOMO ROLL" delay={0.4} />
               </motion.h1>
             </div>
@@ -350,7 +350,7 @@ const SizzleSection = React.memo(({ smoothProgress }) => {
           whileInView={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8 }}
           viewport={{ once: true }}
-          className="flex-1 order-2 md:order-1"
+          className="flex-1 order-1 md:order-1 text-center md:text-left"
         >
           <SectionHeading subtitle="The Himalayan Roots" title={<>THIN<br /><span className="text-momo-red">WRAPPED</span></>} accent="white" />
           <p className="text-white/40 text-sm md:text-lg max-w-xl leading-relaxed font-light italic">
@@ -369,7 +369,7 @@ const SizzleSection = React.memo(({ smoothProgress }) => {
             </div>
           </div>
         </motion.div>
-        <div className="flex-1 order-1 md:order-2">
+        <div className="flex-1 order-2 md:order-2 w-full max-w-sm mx-auto md:max-w-none">
           <motion.div
             style={{
               rotate: useTransform(localProgress, [0.3, 0.7], [5, -5]),
@@ -438,25 +438,26 @@ const MenuSection = React.memo(({ smoothProgress }) => {
             ))}
           </motion.div>
 
-          {/* Mobile Swipe Container */}
-          <div className="flex md:hidden overflow-x-auto gap-6 px-6 no-scrollbar pb-10">
+          {/* Mobile Swipe Container - Enhanced Aesthetics */}
+          <div className="flex md:hidden overflow-x-auto gap-4 px-6 no-scrollbar pb-10 snap-x snap-mandatory">
             {[
               { title: "Chicken Steamed", subtitle: "Bestseller", price: "140", color: "#ff3e3e", src: "/images/steamed_chicken_momos_1773676803158.png", desc: "Succulent minced chicken and pure soul.", spice: "Medium" },
               { title: "Paneer Hariyali", subtitle: "Tandoori Fusion", price: "160", color: "#2ecc71", src: "/images/hariyali_paneer_momos_1773676838649.png", desc: "Refreshing green mint-coriander paste.", spice: "Mild" },
               { title: "Chicken Tandoori", subtitle: "Smoky Fusion", price: "170", color: "#ffb800", src: "/images/tandoori_momos_charred_1773676821098.png", desc: "Marinated in spicy yogurt and charred.", spice: "Hill-Spicy" },
               { title: "Himalayan Thukpa", subtitle: "Traditional Soup", price: "120", color: "#f39c12", src: "/images/himalayan_thukpa_soup_1773676878261.png", desc: "Authentic Himalayan noodle soup with veggies.", spice: "Mild" }
             ].map((card, i) => (
-              <Card
-                key={i}
-                title={card.title}
-                subtitle={card.subtitle}
-                price={card.price}
-                color={card.color}
-                image={card.src.startsWith('/') ? card.src : `/images/flying_${card.src}.png`}
-                description={card.desc}
-                spice={card.spice}
-                onOrder={() => window.dispatchEvent(new CustomEvent('openOrder'))}
-              />
+              <div key={i} className="snap-center">
+                <Card
+                  title={card.title}
+                  subtitle={card.subtitle}
+                  price={card.price}
+                  color={card.color}
+                  image={card.src.startsWith('/') ? card.src : `/images/flying_${card.src}.png`}
+                  description={card.desc}
+                  spice={card.spice}
+                  onOrder={() => window.dispatchEvent(new CustomEvent('openOrder'))}
+                />
+              </div>
             ))}
           </div>
         </div>
@@ -505,7 +506,7 @@ const HubSection = React.memo(({ scrollYProgress }) => {
           <span className="font-bold uppercase tracking-[0.5em] text-[8px] mb-4 md:mb-6 block text-momo-red">Mysuru's Favorite</span>
 
 
-          <h2 className="text-[10vw] md:text-[14vw] font-street leading-[0.85] tracking-tighter mb-8 md:mb-16">AUTHENTIC <br />HIMALAYAN <br />SOUL</h2>
+          <h2 className="text-[18vw] md:text-[14vw] font-street leading-[0.8] tracking-tighter mb-8 md:mb-16">AUTHENTIC <br />HIMALAYAN <br />SOUL</h2>
           <p className="text-sm md:text-3xl text-white/60 font-medium leading-relaxed mb-8 md:mb-16">
             What started as a local gem in Mysuru has become a city-wide legend. We specialize in the thin-wrapped, succulent dumplings inspired by the traditional houses of the Himalayas.
           </p>
@@ -671,7 +672,7 @@ const GallerySection = React.memo(() => {
               transition: { staggerChildren: 0.1, delayChildren: 0.3 }
             }
           }}
-          className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-8 auto-rows-[160px] md:auto-rows-[350px]"
+          className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-8 auto-rows-[120px] md:auto-rows-[350px]"
         >
           {images.map((img, i) => (
             <motion.div
