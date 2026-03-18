@@ -110,8 +110,8 @@ const GlobalBackground = React.memo(({ progress }) => {
     { src: 'green', x: driftX4, y: driftY4, rotate: 45, pos: 'bottom-20 left-20 md:bottom-32 md:left-32', w: 'w-[34vw] md:w-[13vw]', opacity: 0.6 }
   ];
 
-  const bgOpacity = useTransform(progress, [0, 0.15, 0.5], [1, 0, 0]);
-  const bgZIndex = useTransform(progress, [0, 0.15], [50, -1]);
+  const bgOpacity = useTransform(progress, [0, 0.15, 1], [0.8, 0.35, 0.35]);
+  const bgZIndex = -10;
 
   return (
     <motion.div 
@@ -253,18 +253,18 @@ const Hero = React.memo(({ smoothProgress }) => {
 
         <motion.div
           style={{ opacity: heroOpacity, y: headlineY, scale: headlineScale, willChange: 'transform, opacity', transform: 'translateZ(0)' }}
-          className="relative z-20 text-center"
+          className="relative z-30 text-center"
         >
+
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.2, ease: "circOut" }}>
             <span className="text-momo-yellow font-bold uppercase tracking-[0.5em] text-xs mb-12 block px-4 border-x border-momo-yellow/30 mx-auto w-fit">
               Authentic Himalayan Soul
             </span>
-            <div className="overflow-hidden mb-6 md:mb-8">
-              <motion.h1 style={{ x: topTextX }} className="text-[16vw] md:text-[14vw] font-street leading-[0.75] tracking-tighter uppercase mb-4">
+            <div className="flex flex-col mb-4 md:mb-6">
+              <motion.h1 style={{ x: topTextX }} className="text-[16vw] md:text-[14vw] font-street leading-[0.7] tracking-tighter uppercase">
                 <CharReveal text="MYSURU'S FAVORITE" />
               </motion.h1>
-
-              <motion.h1 style={{ x: botTextX }} className="text-[18vw] md:text-[16vw] font-street leading-[0.75] tracking-tight uppercase text-white outline-text">
+              <motion.h1 style={{ x: botTextX }} className="text-[18vw] md:text-[16vw] font-street leading-[0.7] tracking-tight uppercase text-white outline-text -mt-[2vw]">
                 <CharReveal text="MOMO ROLL" delay={0.4} />
               </motion.h1>
             </div>
@@ -301,7 +301,7 @@ const Hero = React.memo(({ smoothProgress }) => {
               filter: `blur(${muttonMomoBlur}px)`,
               willChange: 'transform, opacity, filter'
             }}
-            className="absolute left-1/2 w-[55vw] md:w-[28vw] z-40"
+            className="absolute left-1/2 w-[55vw] md:w-[28vw] z-10"
           >
             <motion.img
               animate={{
@@ -799,11 +799,11 @@ function App() {
   const bgShift = useTransform(smoothProgress, [0, 0.4, 0.8, 1], ["#000000", "#0a0a0a", "#1a1515", "#000000"]);
 
   return (
-    <motion.div 
-      ref={containerRef} 
-      style={{ backgroundColor: bgShift }}
-      className="text-white selection:bg-momo-red selection:text-white relative"
-    >
+    <div ref={containerRef} className="text-white selection:bg-momo-red selection:text-white relative min-h-screen">
+      <motion.div 
+        style={{ backgroundColor: bgShift }}
+        className="fixed inset-0 -z-20"
+      />
 
       <SteamFilter />
       <GrainOverlay />
@@ -909,7 +909,7 @@ function App() {
       <LocationSection />
       <Footer />
 
-    </motion.div>
+    </div>
   );
 }
 
