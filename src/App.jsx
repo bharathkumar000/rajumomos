@@ -108,7 +108,7 @@ const GlobalBackground = React.memo(({ progress }) => {
     { src: 'red', x: driftX2, y: driftY2, rotate: 15, pos: 'top-10 left-10 md:top-24 md:left-24', w: 'w-[28vw] md:w-[18vw]', opacity: 0.9 },
     { src: 'yellow', x: driftX3, y: driftY3, rotate: -10, pos: 'bottom-10 right-10 md:bottom-24 md:right-24', w: 'w-[32vw] md:w-[20vw]', opacity: 0.8 },
     { src: 'green', x: driftX4, y: driftY4, rotate: 45, pos: 'bottom-20 left-20 md:bottom-32 md:left-32', w: 'w-[24vw] md:w-[13vw]', opacity: 0.75 }
-  ];
+  ];  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
 
   const bgOpacity = useTransform(progress, [0, 0.15, 1], [0.95, 0.45, 0.45]);
   const bgZIndex = -10;
@@ -117,38 +117,39 @@ const GlobalBackground = React.memo(({ progress }) => {
     <motion.div 
       style={{ 
         opacity: bgOpacity,
-        zIndex: bgZIndex
+        zIndex: bgZIndex,
+        transform: 'translateZ(0)'
       }} 
-      className="fixed inset-0 pointer-events-none"
+      className="fixed inset-0 pointer-events-none overflow-hidden"
     >
       {momos.map((m, i) => (
         <motion.div
           key={i}
           className={`absolute ${m.pos} ${m.w}`}
           style={{
-            x: m.x,
-            y: m.y,
+            x: isMobile ? 0 : m.x,
+            y: isMobile ? 0 : m.y,
             willChange: 'transform'
           }}
         >
           <motion.img
             animate={{
               y: [0, -20, 0],
-              rotate: [m.rotate, m.rotate + 8, m.rotate - 8, m.rotate],
+              rotate: [m.rotate, m.rotate + 10, m.rotate],
             }}
             transition={{
-              duration: 7 + i * 1.5,
+              duration: 8 + i * 2,
               repeat: Infinity,
-              ease: "easeInOut",
+              ease: "easeInOut"
             }}
-            style={{
+            style={{ 
               rotate: m.rotate,
               opacity: m.opacity,
               mixBlendMode: 'screen',
-              filter: 'contrast(1.2) brightness(1.3) saturate(1.1)',
+              filter: isMobile ? 'brightness(1.1)' : 'contrast(1.2) brightness(1.3) saturate(1.1)',
               WebkitMaskImage: 'radial-gradient(circle at center, black 40%, transparent 75%)',
               maskImage: 'radial-gradient(circle at center, black 40%, transparent 75%)',
-              willChange: 'transform',
+              willChange: 'transform, opacity',
               backfaceVisibility: 'hidden',
               transform: 'translateZ(0)'
             }}
@@ -163,36 +164,57 @@ const GlobalBackground = React.memo(({ progress }) => {
 
 
 
-const CharReveal = ({ text, delay = 0 }) => (
-  <span className="inline-block overflow-hidden pb-0 leading-[1.1]">
-    {text.split("").map((char, i) => (
-      <motion.span
-        key={i}
-        initial={{ y: "110%", opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{
-          duration: 1.2,
-          delay: delay + i * 0.03,
-          ease: [0.16, 1, 0.3, 1]
-        }}
+const CharReveal = ({ text, delay = 0 }) => {
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+  
+  if (isMobile) {
+    return (
+      <motion.span 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8, delay }}
         className="inline-block"
       >
-        {char === " " ? "\u00A0" : char}
+        {text}
       </motion.span>
-    ))}
-  </span>
-);
+    );
+  }
 
-const SteamFilter = () => (
-  <svg className="fixed pointer-events-none opacity-0">
-    <filter id="steam">
-      <feTurbulence type="fractalNoise" baseFrequency="0.015" numOctaves="3" seed="1">
-        <animate attributeName="baseFrequency" dur="60s" values="0.015;0.025;0.015" repeatCount="indefinite" />
-      </feTurbulence>
-      <feDisplacementMap in="SourceGraphic" scale="40" />
-    </filter>
-  </svg>
-);
+  return (
+    <span className="inline-block overflow-hidden pb-0 leading-[1.1]">
+      {text.split("").map((char, i) => (
+        <motion.span
+          key={i}
+          initial={{ y: "110%", opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{
+            duration: 1.2,
+            delay: delay + i * 0.03,
+            ease: [0.16, 1, 0.3, 1]
+          }}
+          className="inline-block"
+        >
+          {char === " " ? "\u00A0" : char}
+        </motion.span>
+      ))}
+    </span>
+  );
+};
+
+const SteamFilter = () => {
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+  if (isMobile) return null; // SVG filters are extremely heavy on mobile
+  return (
+    <svg className="fixed pointer-events-none opacity-0">
+      <filter id="steam">
+        <feTurbulence type="fractalNoise" baseFrequency="0.015" numOctaves="3" seed="1">
+          <animate attributeName="baseFrequency" dur="60s" values="0.015;0.025;0.015" repeatCount="indefinite" />
+        </feTurbulence>
+        <feDisplacementMap in="SourceGraphic" scale="40" />
+      </filter>
+    </svg>
+  );
+};
 
 const SectionHeading = React.memo(({ title, subtitle, accent }) => (
   <motion.div
@@ -262,10 +284,10 @@ const Hero = React.memo(({ smoothProgress }) => {
               Authentic Himalayan Soul
             </span>
             <div className="flex flex-col mb-6 md:mb-10 px-4">
-              <motion.h1 style={{ x: topTextX }} className="text-[15vw] sm:text-[14vw] md:text-[14vw] font-street leading-[0.75] tracking-tighter uppercase">
+              <motion.h1 style={{ x: topTextX }} className="text-[15vw] sm:text-[14vw] md:text-[14vw] font-street leading-[0.8] tracking-tighter uppercase">
                 <CharReveal text="MYSURU'S FAVORITE" />
               </motion.h1>
-              <motion.h1 style={{ x: botTextX }} className="text-[17vw] sm:text-[16vw] md:text-[16vw] font-street leading-[0.75] tracking-tight uppercase text-white outline-text -mt-[1.5vw]">
+              <motion.h1 style={{ x: botTextX }} className="text-[17vw] sm:text-[16vw] md:text-[16vw] font-street leading-[0.8] tracking-tight uppercase text-white outline-text mt-2 md:mt-4">
                 <CharReveal text="MOMO ROLL" delay={0.4} />
               </motion.h1>
             </div>
@@ -604,13 +626,13 @@ const Footer = React.memo(() => (
   <footer className="pt-24 pb-12 md:pt-40 md:pb-24 text-center relative overflow-hidden">
     <div className="max-w-7xl mx-auto px-6">
       <div className="flex flex-col md:flex-row justify-between items-center gap-16 mb-24 md:mb-40">
-        <div className="text-left space-y-6">
+        <div className="text-center md:text-left space-y-6">
           <div className="text-4xl md:text-6xl font-street tracking-tighter">HILL SPECIAL <span className="text-momo-red">MOMOS</span></div>
-          <p className="text-white/40 text-sm md:text-lg max-w-sm font-light">
+          <p className="text-white/40 text-sm md:text-lg max-w-sm font-light mx-auto md:mx-0">
             Bringing the authentic soul of the Himalayas to the vibrant streets of Mysuru since 2014.
           </p>
         </div>
-        <div className="flex flex-col md:items-end gap-8">
+        <div className="flex flex-col items-center md:items-end gap-8">
           <div className="flex gap-10 md:gap-16">
             {["Instagram", "Swiggy", "Zomato"].map(s => (
               <span key={s} className="text-[10px] md:text-xs font-black uppercase tracking-[0.4em] hover:text-momo-red cursor-pointer transition-all border-b border-white/0 hover:border-momo-red/50 pb-2">{s}</span>

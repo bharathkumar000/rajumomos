@@ -41,6 +41,13 @@
   animation: noise 0.2s infinite;
 }
 
+@media (max-width: 768px) {
+  .grain-overlay {
+    animation: none;
+    opacity: 0.03;
+  }
+}
+
 @keyframes noise {
   0% { transform: translate(0, 0); }
   10% { transform: translate(-5%, -5%); }
@@ -78,6 +85,13 @@
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.05);
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.82);
+}
+
+@media (max-width: 768px) {
+  .glass, .glass-premium {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
 }
 
 
