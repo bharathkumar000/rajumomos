@@ -108,7 +108,8 @@ const GlobalBackground = React.memo(({ progress }) => {
     { src: 'red', x: driftX2, y: driftY2, rotate: 15, pos: 'top-10 left-10 md:top-24 md:left-24', w: 'w-[28vw] md:w-[18vw]', opacity: 0.9 },
     { src: 'yellow', x: driftX3, y: driftY3, rotate: -10, pos: 'bottom-10 right-10 md:bottom-24 md:right-24', w: 'w-[32vw] md:w-[20vw]', opacity: 0.8 },
     { src: 'green', x: driftX4, y: driftY4, rotate: 45, pos: 'bottom-20 left-20 md:bottom-32 md:left-32', w: 'w-[24vw] md:w-[13vw]', opacity: 0.75 }
-  ];  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+  ];  
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
 
   const bgOpacity = useTransform(progress, [0, 0.15, 1], [0.95, 0.45, 0.45]);
   const bgZIndex = -10;
@@ -129,11 +130,11 @@ const GlobalBackground = React.memo(({ progress }) => {
           style={{
             x: isMobile ? 0 : m.x,
             y: isMobile ? 0 : m.y,
-            willChange: 'transform'
+            willChange: isMobile ? 'auto' : 'transform'
           }}
         >
           <motion.img
-            animate={{
+            animate={isMobile ? {} : {
               y: [0, -20, 0],
               rotate: [m.rotate, m.rotate + 10, m.rotate],
             }}
@@ -144,12 +145,12 @@ const GlobalBackground = React.memo(({ progress }) => {
             }}
             style={{ 
               rotate: m.rotate,
-              opacity: m.opacity,
+              opacity: isMobile ? m.opacity * 0.8 : m.opacity,
               mixBlendMode: 'screen',
-              filter: isMobile ? 'brightness(1.1)' : 'contrast(1.2) brightness(1.3) saturate(1.1)',
+              filter: isMobile ? 'brightness(1.1) contrast(1.1)' : 'contrast(1.2) brightness(1.3) saturate(1.1)',
               WebkitMaskImage: 'radial-gradient(circle at center, black 40%, transparent 75%)',
               maskImage: 'radial-gradient(circle at center, black 40%, transparent 75%)',
-              willChange: 'transform, opacity',
+              willChange: isMobile ? 'auto' : 'transform, opacity',
               backfaceVisibility: 'hidden',
               transform: 'translateZ(0)'
             }}
@@ -226,7 +227,7 @@ const SectionHeading = React.memo(({ title, subtitle, accent }) => (
     <span className={`text-${accent} font-bold uppercase tracking-[0.5em] text-[10px] md:text-xs mb-6 block`}>
       <CharReveal text={subtitle} />
     </span>
-    <h2 className="text-5xl md:text-[10vw] font-street leading-[0.8] tracking-tight">
+    <h2 className="text-4xl md:text-[10vw] font-street leading-[0.8] tracking-tight">
       <CharReveal text={typeof title === 'string' ? title : ""} />
       {typeof title !== 'string' && title}
     </h2>
@@ -557,13 +558,13 @@ const LocationSection = React.memo(() => (
           { name: "BVB HUB", addr: "In front of BVB, near Sutra, Hubli - 580031.", time: "3:30 PM – 10:00 PM", color: "momo-red" }
         ].map((loc, i) => (
 
-          <div key={i} className={`glass p-10 md:p-12 rounded-[2.5rem] md:rounded-[3rem] hover:border-${loc.color === 'white' ? 'white' : loc.color}/50 transition-colors group mb-6`}>
-            <h3 className="text-3xl md:text-6xl font-street mb-6 md:mb-10 flex items-center gap-6 group-hover:text-momo-red transition-colors">
-              <MapPin className="w-8 h-8 md:w-12 md:h-12 text-momo-red" /> {loc.name}
+          <div key={i} className={`glass p-8 md:p-12 rounded-[2rem] md:rounded-[3rem] hover:border-${loc.color === 'white' ? 'white' : loc.color}/50 transition-colors group mb-6`}>
+            <h3 className="text-2xl md:text-6xl font-street mb-4 md:mb-10 flex items-center gap-4 md:gap-6 group-hover:text-momo-red transition-colors">
+              <MapPin className="w-6 h-6 md:w-12 md:h-12 text-momo-red" /> {loc.name}
             </h3>
-            <p className="text-xl md:text-4xl font-light text-white/60 mb-10 md:mb-16 leading-relaxed">
+            <p className="text-base md:text-4xl font-light text-white/60 mb-8 md:mb-16 leading-relaxed">
               Kalidasa Rd, Vijayanagar 1st Stage, Vijayanagar, Mysuru, Karnataka 570017<br />
-              <span className="text-sm md:text-xl font-bold text-momo-yellow mt-4 md:mt-6 block">{loc.time}</span>
+              <span className="text-xs md:text-xl font-bold text-momo-yellow mt-2 md:mt-6 block">{loc.time}</span>
             </p>
 
 
@@ -577,13 +578,13 @@ const LocationSection = React.memo(() => (
         ))}
       </div>
       <div className="relative order-2 md:order-none mt-12 md:mt-0">
-        <div className="sticky top-40 glass p-10 md:p-16 rounded-[3rem] md:rounded-[4rem] text-center overflow-hidden">
+        <div className="sticky top-40 glass p-8 md:p-16 rounded-[2rem] md:rounded-[4rem] text-center overflow-hidden">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-1 bg-momo-red" />
-          <h3 className="text-4xl md:text-5xl font-street mb-8 uppercase">Let's Talk Momos</h3>
-          <p className="text-lg md:text-xl font-light opacity-60 mb-12">Questions? Bulk orders for parties? Just want to say hi?</p>
-          <div className="flex flex-col gap-6">
-            <a href="tel:+918217245480" className="flex items-center justify-center gap-4 bg-white text-black py-8 rounded-full font-black uppercase tracking-[0.3em] hover:bg-momo-red hover:text-white transition-all text-xs md:text-base"><Phone size={24} /> +91 82172 45480</a>
-            <a href="#" className="flex items-center justify-center gap-4 border border-white/10 py-8 rounded-full font-black uppercase tracking-[0.3em] hover:bg-white/10 transition-all text-xs md:text-base"><Instagram size={24} /> @hillspecialmomos_official</a>
+          <h3 className="text-2xl md:text-5xl font-street mb-6 md:mb-8 uppercase">Let's Talk Momos</h3>
+          <p className="text-base md:text-xl font-light opacity-60 mb-10 md:mb-12">Questions? Bulk orders for parties? Just want to say hi?</p>
+          <div className="flex flex-col gap-4 md:gap-6">
+            <a href="tel:+918217245480" className="flex items-center justify-center gap-4 bg-white text-black py-5 md:py-8 rounded-full font-black uppercase tracking-[0.3em] hover:bg-momo-red hover:text-white transition-all text-[10px] md:text-base"><Phone size={18} md:size={24} /> +91 82172 45480</a>
+            <a href="#" className="flex items-center justify-center gap-4 border border-white/10 py-5 md:py-8 rounded-full font-black uppercase tracking-[0.3em] hover:bg-white/10 transition-all text-[10px] md:text-base"><Instagram size={18} md:size={24} /> @hillspecialmomos_official</a>
           </div>
         </div>
       </div>
@@ -656,6 +657,7 @@ const Footer = React.memo(() => (
 ));
 
 const GallerySection = React.memo(() => {
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
   const images = [
     { src: "/images/steamed_chicken_momos_1773676803158.png", size: "col-span-2 row-span-2", label: "Steamed Chicken", branch: "Vontikoppal HQ" },
     { src: "/images/tandoori_momos_charred_1773676821098.png", size: "col-span-1 row-span-1", label: "Tandoori Char", branch: "Jayalakshmipuram" },
@@ -683,7 +685,7 @@ const GallerySection = React.memo(() => {
           <motion.a
             href="https://www.google.com/search?q=hill+special+momos+mysuru+photos"
             target="_blank"
-            whileHover={{ x: 10 }}
+            whileHover={isMobile ? {} : { x: 10 }}
             className="flex items-center gap-4 text-[9px] md:text-[10px] font-black uppercase tracking-[0.4em] text-white/40 hover:text-momo-red transition-all pointer-events-auto"
           >
             Explore Full Album <ArrowRight size={14} />
@@ -698,7 +700,10 @@ const GallerySection = React.memo(() => {
             hidden: { opacity: 0 },
             show: {
               opacity: 1,
-              transition: { staggerChildren: 0.1, delayChildren: 0.3 }
+              transition: { 
+                staggerChildren: isMobile ? 0.05 : 0.1, 
+                delayChildren: isMobile ? 0.1 : 0.3 
+              }
             }
           }}
           className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-8 auto-rows-[120px] md:auto-rows-[350px]"
@@ -707,9 +712,10 @@ const GallerySection = React.memo(() => {
             <motion.div
               key={i}
               variants={{
-                hidden: { opacity: 0, y: 30, scale: 0.9 },
-                show: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.8, ease: "circOut" } }
+                hidden: { opacity: 0, y: isMobile ? 15 : 30, scale: isMobile ? 1 : 0.9 },
+                show: { opacity: 1, y: 0, scale: 1 }
               }}
+              transition={{ duration: 0.8, ease: "circOut" }}
               className={`relative overflow-hidden rounded-2xl md:rounded-[2.5rem] group bg-white/5 ${img.size}`}
             >
 
@@ -726,7 +732,7 @@ const GallerySection = React.memo(() => {
                 <span className="text-[10px] font-black uppercase tracking-[0.4em] text-momo-red mb-3 block">
                   {img.branch}
                 </span>
-                <h4 className="text-3xl font-street text-white leading-none">{img.label}</h4>
+                <h4 className="text-2xl md:text-3xl font-street text-white leading-none">{img.label}</h4>
               </div>
             </motion.div>
           ))}
@@ -820,16 +826,19 @@ function App() {
     restDelta: 0.001
   });
 
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+  const targetProgress = isMobile ? scrollYProgress : smoothProgress;
+
   React.useEffect(() => {
     const handleOpen = () => setIsOrderModalOpen(true);
     window.addEventListener('openOrder', handleOpen);
     return () => window.removeEventListener('openOrder', handleOpen);
   }, []);
 
-  const bgShift = useTransform(smoothProgress, [0, 0.4, 0.8, 1], ["#000000", "#0a0a0a", "#1a1515", "#000000"]);
+  const bgShift = useTransform(targetProgress, [0, 0.4, 0.8, 1], ["#000000", "#0a0a0a", "#1a1515", "#000000"]);
 
   return (
-    <div ref={containerRef} className="text-white selection:bg-momo-red selection:text-white relative min-h-screen">
+    <div ref={containerRef} className="text-white selection:bg-momo-red selection:text-white relative min-h-screen no-scrollbar">
       <motion.div 
         style={{ backgroundColor: bgShift }}
         className="fixed inset-0 -z-20"
@@ -838,14 +847,14 @@ function App() {
       <SteamFilter />
       <GrainOverlay />
 
-      <GlobalBackground progress={smoothProgress} />
+      <GlobalBackground progress={targetProgress} />
 
       <nav className="fixed top-0 w-full z-50 p-6 md:px-12 md:py-8 flex justify-between items-center bg-transparent pointer-events-none">
 
 
 
         <div className="flex flex-col pointer-events-auto">
-          <div className="text-4xl font-street tracking-tighter text-white leading-none">HILL SPECIAL <span className="text-momo-red">MOMOS</span></div>
+          <div className="text-3xl md:text-4xl font-street tracking-tighter text-white leading-none">HILL SPECIAL <span className="text-momo-red">MOMOS</span></div>
           <div className="flex items-center gap-2 ml-1 mt-1">
             <div className="w-4 h-[2px] bg-momo-red" />
             <span className="text-[10px] font-bold tracking-[0.4em] uppercase opacity-40">Mysuru's Soul</span>
@@ -865,7 +874,7 @@ function App() {
         </div>
         <button 
           onClick={() => setIsMenuOpen(true)}
-          className="lg:hidden bg-white/10 backdrop-blur-xl p-4 rounded-full border border-white/20 pointer-events-auto shadow-2xl active:scale-90 transition-transform"
+          className="lg:hidden bg-white/10 backdrop-blur-xl p-3 md:p-4 rounded-full border border-white/20 pointer-events-auto shadow-2xl active:scale-90 transition-transform"
         >
           <MenuIcon size={20} />
         </button>
@@ -930,12 +939,12 @@ function App() {
 
       <OrderModal isOpen={isOrderModalOpen} onClose={() => setIsOrderModalOpen(false)} />
 
-      <Hero smoothProgress={smoothProgress} />
-      <SizzleSection smoothProgress={smoothProgress} />
-      <MenuSection smoothProgress={smoothProgress} />
+      <Hero smoothProgress={targetProgress} />
+      <SizzleSection smoothProgress={targetProgress} />
+      <MenuSection smoothProgress={targetProgress} />
       <ReviewSection />
       <GallerySection />
-      <HubSection scrollYProgress={scrollYProgress} />
+      <HubSection scrollYProgress={targetProgress} />
       <LocationSection />
       <Footer />
 
