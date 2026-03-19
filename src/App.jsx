@@ -199,15 +199,16 @@ const SectionHeading = React.memo(({ title, subtitle, accent }) => (
     initial={{ opacity: 0, y: 30 }}
     whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: true, margin: "-100px" }}
-    className="mb-8 text-center"
+    className="mb-12 md:mb-16 text-center relative"
   >
-    <span className={`text-${accent} font-bold uppercase tracking-[0.4em] text-xs mb-4 block`}>
+    <span className={`text-${accent} font-bold uppercase tracking-[0.5em] text-[10px] md:text-xs mb-6 block`}>
       <CharReveal text={subtitle} />
     </span>
-    <h2 className="text-5xl md:text-9xl font-street leading-[0.9] tracking-tight">
+    <h2 className="text-5xl md:text-[10vw] font-street leading-[0.8] tracking-tight">
       <CharReveal text={typeof title === 'string' ? title : ""} />
       {typeof title !== 'string' && title}
     </h2>
+    <div className="w-16 h-[2px] bg-momo-red mx-auto mt-8 opacity-40" />
   </motion.div>
 ));
 
@@ -260,11 +261,11 @@ const Hero = React.memo(({ smoothProgress }) => {
             <span className="text-momo-yellow font-bold uppercase tracking-[0.5em] text-xs mb-12 block px-4 border-x border-momo-yellow/30 mx-auto w-fit">
               Authentic Himalayan Soul
             </span>
-            <div className="flex flex-col mb-4 md:mb-6 px-4">
-              <motion.h1 style={{ x: topTextX }} className="text-[14vw] sm:text-[14vw] md:text-[14vw] font-street leading-[0.8] tracking-tighter uppercase">
+            <div className="flex flex-col mb-6 md:mb-10 px-4">
+              <motion.h1 style={{ x: topTextX }} className="text-[15vw] sm:text-[14vw] md:text-[14vw] font-street leading-[0.75] tracking-tighter uppercase">
                 <CharReveal text="MYSURU'S FAVORITE" />
               </motion.h1>
-              <motion.h1 style={{ x: botTextX }} className="text-[16vw] sm:text-[16vw] md:text-[16vw] font-street leading-[0.8] tracking-tight uppercase text-white outline-text -mt-[1vw]">
+              <motion.h1 style={{ x: botTextX }} className="text-[17vw] sm:text-[16vw] md:text-[16vw] font-street leading-[0.75] tracking-tight uppercase text-white outline-text -mt-[1.5vw]">
                 <CharReveal text="MOMO ROLL" delay={0.4} />
               </motion.h1>
             </div>
@@ -344,18 +345,17 @@ const SizzleSection = React.memo(({ smoothProgress }) => {
 
   return (
     <section ref={sizzleRef} id="legacy" className="relative py-32 px-6 md:px-24 bg-black/20 backdrop-blur-sm overflow-hidden" style={{ contentVisibility: 'auto' }}>
-      <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-32 relative z-10">
+      <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-16 md:gap-32 relative z-10">
         <motion.div
           initial={{ opacity: 0, x: -50 }}
           whileInView={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8 }}
           viewport={{ once: true }}
-          className="flex-1 order-1 md:order-1 text-center md:text-left"
+          className="flex-1 order-1 md:order-1 text-center md:text-left space-y-8"
         >
           <SectionHeading subtitle="The Himalayan Roots" title={<>THIN<br /><span className="text-momo-red">WRAPPED</span></>} accent="white" />
-          <p className="text-white/40 text-sm md:text-lg max-w-xl leading-relaxed font-light italic">
-            Inspired by the traditional dumpling houses of the Himalayas, our momos are thin-wrapped to perfection—succulent, juicy, and served with our signature "fiery red" chutney that Hubli obsesses over.
-
+          <p className="text-white/60 text-base md:text-xl max-w-xl leading-relaxed font-light mx-auto md:mx-0">
+            Inspired by the traditional dumpling houses of the Himalayas, our momos are thin-wrapped to perfection—succulent, juicy, and served with our signature <span className="text-momo-red italic font-medium">"fiery red"</span> chutney that Hubli obsesses over.
           </p>
           <div className="flex gap-8 md:gap-12 mt-10 md:mt-0">
             <div className="flex flex-col">
@@ -476,13 +476,14 @@ const ReviewSection = React.memo(() => (
 
             { name: "Rahul K.", text: "The Hariyali spice mix is unmatched. Best experience at Hill Special Momos Jayalakshmipuram for years." }
           ].map((review, j) => (
-            <div key={j} className="glass p-6 md:p-10 rounded-[1.5rem] md:rounded-[2.5rem] w-[280px] md:w-[480px] whitespace-normal">
-              <div className="flex text-momo-yellow gap-1 mb-2">
-                {[1, 2, 3, 4, 5].map(s => <Star key={s} className="w-[10px] h-[10px] md:w-4 md:h-4" fill="currentColor" />)}
-
+            <div key={j} className="glass p-8 md:p-12 rounded-[2rem] md:rounded-[3.5rem] w-[300px] md:w-[520px] whitespace-normal flex flex-col justify-between border-white/10 hover:border-momo-red/30 transition-colors">
+              <div>
+                <div className="flex text-momo-yellow gap-1 mb-4">
+                  {[1, 2, 3, 4, 5].map(s => <Star key={s} className="w-[12px] h-[12px] md:w-5 md:h-5" fill="currentColor" />)}
+                </div>
+                <p className="text-base md:text-2xl font-light italic text-white/80 mb-10 leading-relaxed italic">"{review.text}"</p>
               </div>
-              <p className="text-sm md:text-2xl font-light italic opacity-90 mb-4 md:mb-8 leading-relaxed">"{review.text}"</p>
-              <span className="text-[10px] md:text-sm font-black uppercase tracking-widest text-momo-red">{review.name}</span>
+              <span className="text-[10px] md:text-sm font-black uppercase tracking-[0.4em] text-momo-red">{review.name}</span>
             </div>
 
           ))}
@@ -506,21 +507,14 @@ const HubSection = React.memo(({ scrollYProgress }) => {
           <span className="font-bold uppercase tracking-[0.5em] text-[8px] mb-4 md:mb-6 block text-momo-red">Mysuru's Favorite</span>
 
 
-          <h2 className="text-[18vw] md:text-[14vw] font-street leading-[0.8] tracking-tighter mb-8 md:mb-16">AUTHENTIC <br />HIMALAYAN <br />SOUL</h2>
-          <p className="text-sm md:text-3xl text-white/60 font-medium leading-relaxed mb-8 md:mb-16">
+          <h2 className="text-[18vw] md:text-[14vw] font-street leading-[0.8] tracking-tighter mb-8 md:mb-12">AUTHENTIC <br />HIMALAYAN <br />SOUL</h2>
+          <p className="text-sm md:text-2xl text-white/50 font-light leading-relaxed mb-12 md:mb-20 max-w-4xl mx-auto italic">
             What started as a local gem in Mysuru has become a city-wide legend. We specialize in the thin-wrapped, succulent dumplings inspired by the traditional houses of the Himalayas.
           </p>
 
-
-
-
-
-
-          <div className="flex flex-wrap justify-center gap-6">
-
-
-            <div className="border border-white/10 px-10 py-4 rounded-full font-black uppercase tracking-widest text-xs shadow-xl backdrop-blur-md">3:30 PM – 10:00 PM</div>
-            <div className="bg-white text-black px-10 py-4 rounded-full font-black uppercase tracking-widest text-xs shadow-xl">Takeaway / Quick Bite</div>
+          <div className="flex flex-wrap justify-center gap-6 md:gap-10">
+            <div className="border border-white/10 px-12 py-5 rounded-full font-black uppercase tracking-[0.3em] text-[10px] md:text-xs shadow-2xl backdrop-blur-xl bg-white/5">3:30 PM – 10:00 PM</div>
+            <div className="bg-momo-red text-white px-12 py-5 rounded-full font-black uppercase tracking-[0.3em] text-[10px] md:text-xs shadow-2xl shadow-momo-red/20">Takeaway / Quick Bite</div>
           </div>
         </motion.div>
       </div>
@@ -542,13 +536,12 @@ const LocationSection = React.memo(() => (
         ].map((loc, i) => (
 
           <div key={i} className={`glass p-10 md:p-12 rounded-[2.5rem] md:rounded-[3rem] hover:border-${loc.color === 'white' ? 'white' : loc.color}/50 transition-colors group mb-6`}>
-            <h3 className="text-2xl md:text-5xl font-street mb-4 md:mb-8 flex items-center gap-4 group-hover:text-momo-red transition-colors">
-              <MapPin className="w-6 h-6 md:w-9 md:h-9" /> {loc.name}
-
+            <h3 className="text-3xl md:text-6xl font-street mb-6 md:mb-10 flex items-center gap-6 group-hover:text-momo-red transition-colors">
+              <MapPin className="w-8 h-8 md:w-12 md:h-12 text-momo-red" /> {loc.name}
             </h3>
-            <p className="text-lg md:text-3xl font-light opacity-60 mb-8 md:mb-12 leading-relaxed">
+            <p className="text-xl md:text-4xl font-light text-white/60 mb-10 md:mb-16 leading-relaxed">
               Kalidasa Rd, Vijayanagar 1st Stage, Vijayanagar, Mysuru, Karnataka 570017<br />
-              <span className="text-sm md:text-lg font-bold mt-2 md:mt-4 block">{loc.time}</span>
+              <span className="text-sm md:text-xl font-bold text-momo-yellow mt-4 md:mt-6 block">{loc.time}</span>
             </p>
 
 
@@ -566,9 +559,9 @@ const LocationSection = React.memo(() => (
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-1 bg-momo-red" />
           <h3 className="text-4xl md:text-5xl font-street mb-8 uppercase">Let's Talk Momos</h3>
           <p className="text-lg md:text-xl font-light opacity-60 mb-12">Questions? Bulk orders for parties? Just want to say hi?</p>
-          <div className="flex flex-col gap-4">
-            <a href="tel:+918217245480" className="flex items-center justify-center gap-4 bg-white text-black py-6 rounded-full font-black uppercase tracking-[0.2em] hover:bg-momo-red hover:text-white transition-all text-xs md:text-base"><Phone size={20} /> +91 82172 45480</a>
-            <a href="#" className="flex items-center justify-center gap-4 border border-white/20 py-6 rounded-full font-black uppercase tracking-[0.2em] hover:bg-white/10 transition-all text-xs md:text-base"><Instagram size={20} /> @hillspecialmomos_official</a>
+          <div className="flex flex-col gap-6">
+            <a href="tel:+918217245480" className="flex items-center justify-center gap-4 bg-white text-black py-8 rounded-full font-black uppercase tracking-[0.3em] hover:bg-momo-red hover:text-white transition-all text-xs md:text-base"><Phone size={24} /> +91 82172 45480</a>
+            <a href="#" className="flex items-center justify-center gap-4 border border-white/10 py-8 rounded-full font-black uppercase tracking-[0.3em] hover:bg-white/10 transition-all text-xs md:text-base"><Instagram size={24} /> @hillspecialmomos_official</a>
           </div>
         </div>
       </div>
@@ -608,22 +601,36 @@ const ActionBar = React.memo(({ scrollYProgress }) => {
 });
 
 const Footer = React.memo(() => (
-  <footer className="pt-6 pb-4 md:pt-20 md:pb-16 text-center opacity-30 text-[8px] md:text-base font-black tracking-[0.3em] uppercase">
-    <div className="flex justify-center gap-6 md:gap-16 mb-6 md:mb-16">
-      {["Instagram", "Swiggy", "Zomato"].map(s => <span key={s} className="hover:text-momo-red cursor-pointer transition-colors px-2">{s}</span>)}
-    </div>
-    <p className="md:text-2xl">Authentic Himalayan Soul • The Favorite Roll</p>
-    <p className="mt-2 md:mt-6 tracking-widest md:text-lg">ALL RIGHTS ARE RESERVED – © 2024 HILL SPECIAL Momos</p>
-    <div className="mt-4 md:mt-6 flex flex-col items-center gap-2">
-      <span className="h-[1px] w-12 bg-white/10" />
-      <p className="text-white/80 tracking-[0.5em] md:text-sm font-black drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">
-        DEVELOPED BY <span className="text-white">TECH NEXUS</span>
-      </p>
+  <footer className="pt-24 pb-12 md:pt-40 md:pb-24 text-center relative overflow-hidden">
+    <div className="max-w-7xl mx-auto px-6">
+      <div className="flex flex-col md:flex-row justify-between items-center gap-16 mb-24 md:mb-40">
+        <div className="text-left space-y-6">
+          <div className="text-4xl md:text-6xl font-street tracking-tighter">HILL SPECIAL <span className="text-momo-red">MOMOS</span></div>
+          <p className="text-white/40 text-sm md:text-lg max-w-sm font-light">
+            Bringing the authentic soul of the Himalayas to the vibrant streets of Mysuru since 2014.
+          </p>
+        </div>
+        <div className="flex flex-col md:items-end gap-8">
+          <div className="flex gap-10 md:gap-16">
+            {["Instagram", "Swiggy", "Zomato"].map(s => (
+              <span key={s} className="text-[10px] md:text-xs font-black uppercase tracking-[0.4em] hover:text-momo-red cursor-pointer transition-all border-b border-white/0 hover:border-momo-red/50 pb-2">{s}</span>
+            ))}
+          </div>
+          <p className="text-[10px] md:text-xs font-black tracking-[0.4em] uppercase text-white/20">© 2024 Hill Special Momos. All Rights Reserved.</p>
+        </div>
+      </div>
+      
+      <div className="flex flex-col items-center gap-8 pt-12 border-t border-white/5">
+        <p className="text-xs md:text-base font-black tracking-[0.8em] uppercase text-white/10">Authentic Himalayan Soul • The Favorite Roll</p>
+        <div className="flex flex-col items-center gap-4">
+          <span className="h-[1px] w-24 bg-white/10" />
+          <p className="text-[10px] md:text-xs tracking-[0.6em] font-black text-white/30">
+            DESIGNED & DEVELOPED BY <span className="text-white/60 hover:text-momo-red transition-colors cursor-pointer">TECH NEXUS</span>
+          </p>
+        </div>
+      </div>
     </div>
   </footer>
-
-
-
 ));
 
 const GallerySection = React.memo(() => {
