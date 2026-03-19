@@ -237,6 +237,7 @@ const SectionHeading = React.memo(({ title, subtitle, accent }) => (
 
 
 const Hero = React.memo(({ smoothProgress }) => {
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
   const heroOpacity = useTransform(smoothProgress, [0, 0.1], [1, 0]);
   const heroScale = useTransform(smoothProgress, [0, 0.15], [1, 1.2]);
   const headlineY = useTransform(smoothProgress, [0, 0.15], [0, -100]);
