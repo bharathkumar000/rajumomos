@@ -104,8 +104,8 @@ const GlobalBackground = React.memo(({ progress }) => {
   const driftY4 = useTransform(progress, [0, 1], [0, 100]);
 
   const momos = [
-    { src: 'white', x: driftX1, y: driftY1, rotate: -45, pos: 'top-10 right-10 md:top-24 md:right-24', w: 'w-[18vw] md:w-[15vw]', opacity: 0.75 },
-    { src: 'red', x: driftX2, y: driftY2, rotate: 15, pos: 'top-10 left-10 md:top-24 md:left-24', w: 'w-[28vw] md:w-[18vw]', opacity: 0.9 },
+    { src: 'white', x: driftX1, y: driftY1, rotate: -45, pos: 'top-32 right-10 md:top-24 md:right-24', w: 'w-[18vw] md:w-[15vw]', opacity: 0.75 },
+    { src: 'red', x: driftX2, y: driftY2, rotate: 15, pos: 'top-36 left-10 md:top-24 md:left-24', w: 'w-[28vw] md:w-[18vw]', opacity: 0.9 },
     { src: 'yellow', x: driftX3, y: driftY3, rotate: -10, pos: 'bottom-10 right-10 md:bottom-24 md:right-24', w: 'w-[32vw] md:w-[20vw]', opacity: 0.8 },
     { src: 'green', x: driftX4, y: driftY4, rotate: 45, pos: 'bottom-20 left-20 md:bottom-32 md:left-32', w: 'w-[24vw] md:w-[13vw]', opacity: 0.75 }
   ];  
@@ -261,7 +261,7 @@ const Hero = React.memo(({ smoothProgress }) => {
   const headlineScale = useTransform(smoothProgress, [0, 0.15], [1, 0.85]);
 
   return (
-    <section className="relative h-[200vh] z-10">
+    <section className={`relative z-10 ${isMobile ? 'h-[130vh]' : 'h-[200vh]'}`}>
       <div className="sticky top-0 h-screen overflow-hidden flex items-center justify-center">
         <motion.div
           style={{
@@ -475,7 +475,7 @@ const MenuSection = React.memo(({ smoothProgress }) => {
                   subtitle={card.subtitle}
                   price={card.price}
                   color={card.color}
-                  image={card.src.startsWith('/') ? card.src : `/images/flying_${card.src}.png`}
+                  image={card.src}
                   description={card.desc}
                   spice={card.spice}
                   onOrder={() => window.dispatchEvent(new CustomEvent('openOrder'))}
@@ -491,12 +491,12 @@ const MenuSection = React.memo(({ smoothProgress }) => {
 const ReviewSection = React.memo(() => (
   <section className="py-20 bg-black/30 backdrop-blur-sm overflow-hidden border-y border-white/10" style={{ contentVisibility: 'auto' }}>
     <div className="text-center mb-20 uppercase tracking-[0.5em] text-xs opacity-60">High 4.4+ Star Ratings on Google, Justdial & Magicpin</div>
-    <div className="flex whitespace-nowrap animate-marquee">
+    {/* Desktop Cinematic Marquee */}
+    <div className="hidden md:flex whitespace-nowrap animate-marquee">
       {[1, 2, 3, 4].map(i => (
         <div key={i} className="flex gap-10 px-5 items-center">
           {[
             { name: "Ismail B.", text: "Best chicken momos in Hubli! Hill Special Momos has been our go-to spot near BVB. That signature red chutney is literally fire!" },
-
             { name: "Rahul K.", text: "The Hariyali spice mix is unmatched. Best experience at Hill Special Momos Jayalakshmipuram for years." }
           ].map((review, j) => (
             <div key={j} className="glass p-8 md:p-12 rounded-[2rem] md:rounded-[3.5rem] w-[300px] md:w-[520px] whitespace-normal flex flex-col justify-between border-white/10 hover:border-momo-red/30 transition-colors">
@@ -508,11 +508,30 @@ const ReviewSection = React.memo(() => (
               </div>
               <span className="text-[10px] md:text-sm font-black uppercase tracking-[0.4em] text-momo-red">{review.name}</span>
             </div>
-
           ))}
         </div>
       ))}
+    </div>
 
+    {/* Mobile Tactile Swiper */}
+    <div className="flex md:hidden overflow-x-auto gap-4 px-6 no-scrollbar pb-10 snap-x snap-mandatory">
+      {[
+        { name: "Ismail B.", text: "Best chicken momos in Hubli! Hill Special Momos has been our go-to spot near BVB. That signature red chutney is literally fire!" },
+        { name: "Rahul K.", text: "The Hariyali spice mix is unmatched. Best experience at Hill Special Momos Jayalakshmipuram for years." },
+        { name: "Ananya M.", text: "Absolutely loved the thin-wrapped momos! The flavor is so authentic. Highly recommended!" }
+      ].map((review, k) => (
+        <div key={k} className="snap-center shrink-0">
+          <div className="glass p-6 rounded-3xl w-[260px] h-[320px] whitespace-normal flex flex-col justify-between border-white/10">
+            <div>
+              <div className="flex text-momo-yellow gap-1 mb-4">
+                {[1, 2, 3, 4, 5].map(s => <Star key={s} className="w-[10px] h-[10px]" fill="currentColor" />)}
+              </div>
+              <p className="text-xs font-light italic text-white/80 leading-relaxed italic line-clamp-6">"{review.text}"</p>
+            </div>
+            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-momo-red">{review.name}</span>
+          </div>
+        </div>
+      ))}
     </div>
   </section>
 ));
@@ -559,16 +578,14 @@ const LocationSection = React.memo(() => (
         ].map((loc, i) => (
 
           <div key={i} className={`glass p-8 md:p-12 rounded-[2rem] md:rounded-[3rem] hover:border-${loc.color === 'white' ? 'white' : loc.color}/50 transition-colors group mb-6`}>
-            <h3 className="text-2xl md:text-6xl font-street mb-4 md:mb-10 flex items-center gap-4 md:gap-6 group-hover:text-momo-red transition-colors">
+            <h3 className="text-2xl md:text-6xl font-street mb-4 md:mb-10 flex items-center gap-4 md:gap-6 group-hover:text-momo-red transition-colors text-left">
               <MapPin className="w-6 h-6 md:w-12 md:h-12 text-momo-red" /> {loc.name}
             </h3>
-            <p className="text-base md:text-4xl font-light text-white/60 mb-8 md:mb-16 leading-relaxed">
+            <p className="text-base md:text-4xl font-light text-white/60 mb-8 md:mb-16 leading-relaxed text-left">
               Kalidasa Rd, Vijayanagar 1st Stage, Vijayanagar, Mysuru, Karnataka 570017<br />
-              <span className="text-xs md:text-xl font-bold text-momo-yellow mt-2 md:mt-6 block">{loc.time}</span>
+              <span className="text-sm md:text-xl font-bold text-momo-yellow mt-4 md:mt-6 block">{loc.time}</span>
             </p>
-
-
-            <div className="flex items-center gap-6">
+            <div className="flex items-center gap-6 justify-start">
               <span className="text-[10px] font-black uppercase tracking-widest opacity-30">Cash & UPI Accepted</span>
               <button className={`flex items-center gap-3 text-xs font-black uppercase tracking-widest hover:gap-6 transition-all ${loc.color === 'momo-yellow' ? 'text-momo-yellow' : ''}`}>
                 Maps <ArrowRight size={14} />
@@ -578,13 +595,13 @@ const LocationSection = React.memo(() => (
         ))}
       </div>
       <div className="relative order-2 md:order-none mt-12 md:mt-0">
-        <div className="sticky top-40 glass p-8 md:p-16 rounded-[2rem] md:rounded-[4rem] text-center overflow-hidden">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-1 bg-momo-red" />
+        <div className="sticky top-40 glass p-8 md:p-16 rounded-[2rem] md:rounded-[4rem] text-left md:text-center overflow-hidden">
+          <div className="absolute top-0 left-0 md:left-1/2 md:-translate-x-1/2 w-40 h-1 bg-momo-red" />
           <h3 className="text-2xl md:text-5xl font-street mb-6 md:mb-8 uppercase">Let's Talk Momos</h3>
           <p className="text-base md:text-xl font-light opacity-60 mb-10 md:mb-12">Questions? Bulk orders for parties? Just want to say hi?</p>
           <div className="flex flex-col gap-4 md:gap-6">
-            <a href="tel:+918217245480" className="flex items-center justify-center gap-4 bg-white text-black py-5 md:py-8 rounded-full font-black uppercase tracking-[0.3em] hover:bg-momo-red hover:text-white transition-all text-[10px] md:text-base"><Phone size={18} md:size={24} /> +91 82172 45480</a>
-            <a href="#" className="flex items-center justify-center gap-4 border border-white/10 py-5 md:py-8 rounded-full font-black uppercase tracking-[0.3em] hover:bg-white/10 transition-all text-[10px] md:text-base"><Instagram size={18} md:size={24} /> @hillspecialmomos_official</a>
+            <a href="tel:+918217245480" className="flex items-center justify-center gap-4 bg-white text-black py-5 md:py-8 rounded-full font-black uppercase tracking-[0.3em] hover:bg-momo-red hover:text-white transition-all text-[10px] md:text-base"><Phone size={18} /> +91 82172 45480</a>
+            <a href="#" className="flex items-center justify-center gap-4 border border-white/10 py-5 md:py-8 rounded-full font-black uppercase tracking-[0.3em] hover:bg-white/10 transition-all text-[10px] md:text-base"><Instagram size={18} /> @hillspecialmomos_official</a>
           </div>
         </div>
       </div>
